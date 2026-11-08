@@ -1,0 +1,99 @@
+import json
+import tempfile
+import unittest
+import xml.etree.ElementTree as ET
+from datetime import datetime, timezone
+from pathlib import Path
+
+from finder import assess, build, load_history, score, tier, validate_vehicle
+
+SEED = Path(__file__).parent / "snapshots" / "2026-11-08.json"
+CAR = json.loads(SEED.read_text())["vehicles"][0]
+NOW = datetime(2026, 11, 14, tzinfo=timezone.utc)
+
+
+class FinderTests(unittest.TestCase):
+    def setUp(self):
+        self.car = {**CAR, "production_year": 2024, "acc_working": True}
+
+    def test_must_criteria_and_thresholds(self):
+        self.assertEqual(assess(CAR)[0], "Prüfbedürftig")
+        self.assertEqual(assess({**self.car, "acc": False, "acc_working": None})[0], "Ausgeschlossen")
+        self.assertEqual(assess({**self.car, "accident_free": False})[0], "Ausgeschlossen")
+        self.assertEqual(assess({**self.car, "color_group": "excluded"})[0], "Ausgeschlossen")
+        self.assertEqual(assess({**CAR, "registration": "2021-12"})[0], "Ausgeschlossen")
+        boundary = {**self.car, "price": 95000, "km": 65000}
+        self.assertEqual(assess(boundary)[0], "Bestätigter Profiltreffer")
+        self.assertEqual(tier(boundary), "C")
+        self.assertEqual(assess({**boundary, "km": 65001})[0], "Ausgeschlossen")
+        self.assertEqual(tier({**self.car, "price": 80000, "km": 50000}), "A")
+        self.assertEqual(tier(self.car), "B")
+
+    def test_unknown_distance_and_porsche_domains(self):
+        self.assertIsNone(assess({**self.car, "dealer_coordinates": None})[1]["distance"])
+        self.assertFalse(assess({**self.car, "dealer_coordinates": [53.55, 10.0]})[1]["distance"])
+        with self.assertRaises(ValueError):
+            validate_vehicle({**CAR, "url": "https://finder.porsche.com.example.org/de/de-DE/details/x"}, 2026)
+        with self.assertRaises(ValueError):
+            validate_vehicle({**CAR, "acc": "false"}, 2026)
+
+    def test_scoring_requires_real_comparables(self):
+        car = {**self.car, "key": "a", "researched_at": NOW.isoformat(), "condition_points": 20,
+               "impression_points": 7}
+        peers = [{**car, "key": str(i)} for i in range(5)]
+        self.assertEqual(score(CAR, [], NOW), (None, {}))
+        self.assertIsNone(score(car, peers[:4], NOW)[0])
+        result, breakdown = score(car, peers, NOW)
+        self.assertEqual(breakdown["Preis / Marktvergleich"], 15)
+        self.assertEqual(breakdown["18-Wege-Sportsitze"], 0)
+        self.assertEqual(result, sum(breakdown.values()))
+
+    def snapshot(self, root, day, vehicles):
+        stamp = f"2026-11-{day:02d}T08:00:00+01:00"
+        path = root / f"{day}.json"
+        path.write_text(json.dumps({"researched_at": stamp, "verified_at": stamp,
+                                    "scope": "Teststichprobe", "vehicles": vehicles}))
+        return path
+
+    def test_history_and_rss_include_only_relevant_changes(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            paths = [self.snapshot(root, 8, [CAR]), self.snapshot(root, 9, [self.car]),
+                     self.snapshot(root, 10, [self.car]), self.snapshot(root, 11, []),
+                     self.snapshot(root, 12, [{**self.car, "price": 83900}]),
+                     self.snapshot(root, 13, [{**self.car, "price": 83900, "availability": "not_found"}])]
+            _, history, events = load_history(paths, NOW)
+            self.assertEqual(len(history["aschaffenburg-5321"]), 5)
+            self.assertEqual([event[0] for event in events], ["new", "price"])
+            self.assertEqual(events[1][2], 85890)
+            build(paths, root / "site", "test", NOW)
+            feed = ET.parse(root / "site/feed.xml")
+            self.assertEqual(len(feed.findall("./channel/item")), 2)
+            page = (root / "site/index.html").read_text()
+            self.assertIn("Nicht mehr auffindbar", page)
+            self.assertIn("83.900 €", page)
+
+    def test_seed_build_has_no_alert_and_keeps_unknown_fields(self):
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory)
+            build([SEED], output, "test", NOW)
+            page = (output / "index.html").read_text()
+            self.assertIn("Prüfbedürftige Inserate · 1", page)
+            self.assertIn("Produktionsjahr ab 2022 · Ungeklärt", page)
+            self.assertIn("85.890 €", page)
+            self.assertEqual(ET.parse(output / "feed.xml").findall("./channel/item"), [])
+            self.assertEqual((output / "build.txt").read_text().strip(), "test")
+
+    def test_duplicate_or_invalid_snapshot_is_rejected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            path = self.snapshot(root, 8, [CAR, CAR])
+            with self.assertRaisesRegex(ValueError, "Doppelter"):
+                load_history([path], NOW)
+            future = self.snapshot(root, 15, [CAR])
+            with self.assertRaises(ValueError):
+                load_history([future], NOW)
+
+
+if __name__ == "__main__":
+    unittest.main()

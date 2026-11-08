@@ -1,0 +1,29 @@
+{
+  "researched_at": "2026-11-08T17:34:42Z",
+  "verified_at": "2026-11-08T17:34:42Z",
+  "scope": "Manuelle Stichprobe · 1 Originalinserat geprüft",
+  "vehicles": [
+    {
+      "url": "https://finder.porsche.com/de/de-DE/details/porsche-macan-s-gebraucht-4GW7L5",
+      "dealer": "Porsche Zentrum Aschaffenburg",
+      "dealer_url": "https://aschaffenburg.porsche.de/de/contact",
+      "stock": "5321",
+      "model": "S",
+      "production_year": null,
+      "registration": "2024-09",
+      "price": 85890,
+      "km": 36700,
+      "color": "Dolomitsilbermetallic",
+      "color_group": "allowed",
+      "dealer_coordinates": [49.975, 9.152],
+      "coordinate_accuracy_km": 10,
+      "accident_free": true,
+      "acc": true,
+      "acc_working": null,
+      "seats18": false,
+      "chrono": true,
+      "warranty_months": 12,
+      "availability": "listed"
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+name: Macan Finder
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  schedule:
+    - cron: '0 8 * * *'
+      timezone: Europe/Berlin
+
+permissions: {}
+
+concurrency:
+  group: macan-finder-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - name: Testen und Seite erstellen
+        run: |
+          python3 -m unittest -v
+          python3 finder.py --output _site --build-id "${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          echo 'Datenstand aus geprüften Stichproben. Kein automatischer Porsche-Abruf konfiguriert.' >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/deploy-pages@v4
+        id: deployment
+      - name: Öffentliche Version prüfen
+        env:
+          PAGE_URL: ${{ steps.deployment.outputs.page_url }}
+        run: |
+          set -euo pipefail
+          expected="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          for retry in {1..12}; do
+            actual="$(curl -fsS --max-time 10 "${PAGE_URL%/}/build.txt?run=$expected" || true)"
+            if [[ "$actual" == "$expected" ]] && curl -fsS --max-time 10 "${PAGE_URL%/}/feed.xml?run=$expected" -o /dev/null; then
+              printf 'Öffentliche Version geprüft um %s (UTC).\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+            sleep 5
+          done
+          exit 1
