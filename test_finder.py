@@ -15,7 +15,7 @@ NOW = datetime(2026, 11, 14, tzinfo=timezone.utc)
 class FinderTests(unittest.TestCase):
     def setUp(self):
         self.car = {**CAR, "production_year": None, "acc_working": None,
-                    "dealer_coordinates": [49.4521, 11.0767], "coordinate_accuracy_km": 1}
+                    "dealer_coordinates": [49.4521, 11.0767], "coordinate_accuracy_km": 1, "dealer": "Porsche Zentrum Bamberg", "dealer_url": "https://bamberg.porsche.de/de/contact"}
 
     def test_must_criteria_and_thresholds(self):
         self.assertEqual(assess(CAR)[0], "Ausgeschlossen")
@@ -64,12 +64,12 @@ class FinderTests(unittest.TestCase):
     def test_history_and_rss_include_only_relevant_changes(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            paths = [self.snapshot(root, 8, [{**CAR, "acc": None}]), self.snapshot(root, 9, [self.car]),
+            paths = [self.snapshot(root, 8, [{**self.car, "acc": None}]), self.snapshot(root, 9, [self.car]),
                      self.snapshot(root, 10, [self.car]), self.snapshot(root, 11, []),
                      self.snapshot(root, 12, [{**self.car, "price": 83900}]),
                      self.snapshot(root, 13, [{**self.car, "price": 83900, "availability": "not_found"}])]
             _, history, events = load_history(paths, NOW)
-            self.assertEqual(len(history["aschaffenburg-5321"]), 5)
+            self.assertEqual(len(history["bamberg-5321"]), 5)
             self.assertEqual([event[0] for event in events], ["new", "price"])
             self.assertEqual(events[1][2], 85890)
             build(paths, root / "site", "test", NOW)
