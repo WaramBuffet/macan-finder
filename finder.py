@@ -287,12 +287,13 @@ def card(car, observations, result, now):
         "destination": car["dealer"], "travelmode": "driving"})
     dealer_id = (urlsplit(car["dealer_url"]).hostname or "").split(".")[0]
     minutes = DEALER_DRIVE_MINUTES.get(dealer_id)
+    fixed_drive = not car.get("drive_time") and minutes is not None
     drive = car.get("drive_time") or ({"minutes": minutes, "source": route, "checked_at": "2026-11-09T22:00:00+01:00"} if minutes else None)
     if drive:
         minutes = drive["minutes"]
         duration = f"{minutes // 60} Std. {minutes % 60:02d} Min." if minutes >= 60 else f"{minutes} Min."
         drive_label = (f'ca. {duration} · <a href="{escape(drive["source"], quote=True)}">Quelle</a>'
-                       f' · {"Stand " + display_time(drive["checked_at"])}')
+                       f' · {"Google Maps, Abfrage 09.11.2026" if fixed_drive else "Stand " + display_time(drive["checked_at"])}')
     else:
         drive_label = '<a href="{}">Fahrzeit in Routenplanung ansehen ↗</a>'.format(escape(route, quote=True))
     return f"""
