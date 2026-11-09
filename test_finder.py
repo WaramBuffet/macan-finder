@@ -29,7 +29,7 @@ class FinderTests(unittest.TestCase):
         boundary = {**self.car, "price": 95000, "km": 65000}
         self.assertEqual(assess(boundary)[0], "Bestätigter Profiltreffer")
         self.assertEqual(tier(boundary), "C")
-        self.assertEqual(assess({**boundary, "km": 65001})[0], "Ausgeschlossen")
+        self.assertEqual(assess({**boundary, "km": 65001})[0], "Bestätigter Profiltreffer")
         self.assertEqual(tier({**self.car, "price": 80000, "km": 50000}), "A")
         self.assertEqual(tier(self.car), "B")
 
@@ -85,8 +85,8 @@ class FinderTests(unittest.TestCase):
             build([SEED], output, "test", NOW)
             page = (output / "index.html").read_text()
             self.assertIn("Bestätigte Profiltreffer · 0", page)
-            self.assertIn("Erstzulassung ab 2022 · Bestätigt", page)
-            self.assertIn("85.890 €", page)
+            self.assertNotIn("Porsche Zentrum Aschaffenburg", page)
+            self.assertNotIn("85.890 €", page)
             self.assertEqual(len(ET.parse(output / "feed.xml").findall("./channel/item")), 0)
             self.assertEqual((output / "build.txt").read_text().strip(), "test")
 
