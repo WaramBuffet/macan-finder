@@ -1,0 +1,29 @@
+{
+  "researched_at": "2026-11-09T12:03:03Z",
+  "verified_at": "2026-11-09T12:05:00Z",
+  "scope": "Manuelle Teilstichprobe: Porsche Finder, 100 km um Nürnberg, Macan S/GTS und ACC-Filter; sechs Suchtreffer gesichtet, ein Inserat einzeln geprüft. Keine vollständige Markterhebung.",
+  "vehicles": [
+    {
+      "url": "https://finder.porsche.com/de/de-DE/details/porsche-macan-gts-gebraucht-44Q4WE",
+      "dealer": "Porsche Zentrum Bamberg",
+      "dealer_url": "https://bamberg.porsche.de/de/contact",
+      "stock": "28561",
+      "model": "GTS",
+      "production_year": null,
+      "registration": "2023-12",
+      "price": 72900,
+      "km": 75900,
+      "color": "Tiefschwarzmetallic",
+      "color_group": "allowed",
+      "dealer_coordinates": null,
+      "coordinate_accuracy_km": null,
+      "accident_free": true,
+      "acc": true,
+      "acc_working": null,
+      "seats18": true,
+      "chrono": true,
+      "warranty_months": 12,
+      "availability": "reserved"
+    }
+  ]
+}
