@@ -24,8 +24,7 @@ AVAILABILITY = {
     "not_found": "Nicht mehr auffindbar", "unknown": "Ungeklärt",
 }
 CHECKS = {
-    "registration": "Erstzulassung ab 2022", "price": "Preis bis 95.000 €",
-    "km": "Laufleistung bis 65.000 km", "color_group": "Außenfarbe weder Rot noch Weiß",
+    "registration": "Erstzulassung ab 2022", "color_group": "Außenfarbe weder Rot noch Weiß",
     "distance": "Im Umkreis von 100 km", "accident_free": "Unfallfrei",
     "acc": "ACC laut Inserat vorhanden",
 }
@@ -133,7 +132,7 @@ def distance(car):
 
 def assess(car):
     checks = {field: car.get(field) for field in ("accident_free", "acc")}
-    for key, limit in (("price", 95000), ("km", 65000)):
+    for key, limit in ():
         value = car.get(key)
         checks[key] = None if value is None else value <= limit
     registration = car.get("registration")
@@ -185,7 +184,7 @@ def score(car, peers, as_of):
     market = None
     if len(candidates) >= 5:
         market = round(max(0, min(30, 15 + 100 * (1 - car["price"] / median(candidates)))))
-    mileage = round(12 * (1 - car["km"] / 65000))
+    mileage = max(0, round(12 * (1 - car["km"] / 65000)))
     age = as_of.astimezone(BERLIN).year - int(car["registration"][:4])
     points = {
         "Preis / Marktvergleich": market,
@@ -291,7 +290,7 @@ def card(car, observations, result, now):
         drive_label = (f'ca. {duration} · <a href="{escape(drive["source"], quote=True)}">Quelle</a>'
                        f' · Stand {display_time(drive["checked_at"])}')
     else:
-        drive_label = "noch nicht ermittelt"
+        drive_label = '<a href="{}">Fahrzeit in Routenplanung ansehen ↗</a>'.format(escape(route, quote=True))
     return f"""
     <article id="{escape(car['key'])}">
       <p class="eyebrow">{escape(state)} · Suchbereich {tier(car)} · {label}</p>
@@ -316,6 +315,8 @@ def build(paths, output, build_id, now):
     latest = [entries[-1] for entries in history.values()]
     confirmed, pending, archived = [], [], []
     for car in latest:
+        if assess(car)[1]["distance"] is not True:
+            continue
         state, _ = assess(car)
         result = score(car, latest, now)
         group = {"Bestätigter Profiltreffer": confirmed, "Prüfbedürftig": pending}.get(state, archived)
