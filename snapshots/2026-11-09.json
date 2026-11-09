@@ -1,0 +1,29 @@
+{
+  "researched_at": "2026-11-09T05:03:14Z",
+  "verified_at": "2026-11-09T05:03:14Z",
+  "scope": "Manuelle Stichprobe: ein Porsche-Finder-Inserat geprüft; keine vollständige Markterhebung.",
+  "vehicles": [
+    {
+      "url": "https://finder.porsche.com/de/de-DE/details/porsche-macan-gts-gebraucht-V43902",
+      "dealer": "Porsche Zentrum Böblingen",
+      "dealer_url": "https://boeblingen.porsche.de/de/contact",
+      "stock": "BB-2592",
+      "model": "GTS",
+      "production_year": null,
+      "registration": "2022-12",
+      "price": 92880,
+      "km": 31500,
+      "color": "Enzianblaumetallic",
+      "color_group": "allowed",
+      "dealer_coordinates": null,
+      "coordinate_accuracy_km": null,
+      "accident_free": true,
+      "acc": true,
+      "acc_working": null,
+      "seats18": true,
+      "chrono": true,
+      "warranty_months": 12,
+      "availability": "listed"
+    }
+  ]
+}
