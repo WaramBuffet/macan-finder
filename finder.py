@@ -23,14 +23,14 @@ AVAILABILITY = {
     "not_found": "Nicht mehr auffindbar", "unknown": "Ungeklärt",
 }
 CHECKS = {
-    "production_year": "Produktionsjahr ab 2022", "price": "Preis bis 95.000 €",
+    "registration": "Erstzulassung ab 2022", "price": "Preis bis 95.000 €",
     "km": "Laufleistung bis 65.000 km", "color_group": "Außenfarbe weder Rot noch Weiß",
     "distance": "Im Umkreis von 200 km", "accident_free": "Unfallfrei",
-    "acc": "ACC vorhanden", "acc_working": "ACC-Funktion bestätigt",
+    "acc": "ACC laut Inserat vorhanden",
 }
 WEIGHTS = {
     "Preis / Marktvergleich": 30, "Zustand / Historie": 25,
-    "Laufleistung / Produktionsjahr": 20, "18-Wege-Sportsitze": 10,
+    "Laufleistung / Erstzulassung": 20, "18-Wege-Sportsitze": 10,
     "Sport Chrono": 5, "Farbe / Gesamteindruck": 10,
 }
 
@@ -121,15 +121,12 @@ def distance(car):
 
 
 def assess(car):
-    checks = {field: car.get(field) for field in ("accident_free", "acc", "acc_working")}
+    checks = {field: car.get(field) for field in ("accident_free", "acc")}
     for key, limit in (("price", 95000), ("km", 65000)):
         value = car.get(key)
         checks[key] = None if value is None else value <= limit
-    production = car.get("production_year")
     registration = car.get("registration")
-    checks["production_year"] = None if production is None else production >= 2022
-    if registration and int(registration[:4]) < 2022:
-        checks["production_year"] = False
+    checks["registration"] = None if registration is None else int(registration[:4]) >= 2022
     color = car.get("color_group")
     checks["color_group"] = None if color is None else color == "allowed"
     km = distance(car)
@@ -167,7 +164,8 @@ def score(car, peers, as_of):
         peer["price"] for peer in peers
         if peer["key"] != car["key"] and peer["availability"] == "listed"
         and as_of - moment(peer["researched_at"]) <= timedelta(days=7)
-        and peer["model"] == car["model"] and peer.get("production_year") == car["production_year"]
+        and peer["model"] == car["model"] and peer.get("registration")
+        and peer["registration"][:4] == car["registration"][:4]
         and peer.get("price") is not None and peer.get("km") is not None
         and abs(peer["km"] - car["km"]) <= 10000
         and car.get("seats18") is not None and car.get("chrono") is not None
@@ -177,11 +175,11 @@ def score(car, peers, as_of):
     if len(candidates) >= 5:
         market = round(max(0, min(30, 15 + 100 * (1 - car["price"] / median(candidates)))))
     mileage = round(12 * (1 - car["km"] / 65000))
-    age = as_of.astimezone(BERLIN).year - car["production_year"]
+    age = as_of.astimezone(BERLIN).year - int(car["registration"][:4])
     points = {
         "Preis / Marktvergleich": market,
         "Zustand / Historie": car.get("condition_points"),
-        "Laufleistung / Produktionsjahr": mileage + max(0, 8 - 2 * age),
+        "Laufleistung / Erstzulassung": mileage + max(0, 8 - 2 * age),
         "18-Wege-Sportsitze": None if car.get("seats18") is None else 10 * car["seats18"],
         "Sport Chrono": None if car.get("chrono") is None else 5 * car["chrono"],
         "Farbe / Gesamteindruck": car.get("impression_points"),
@@ -249,7 +247,6 @@ def card(car, observations, result, now):
     km = distance(car)
     values = [
         ("Preis", number(car.get("price"), " €")), ("Laufleistung", number(car.get("km"), " km")),
-        ("Produktionsjahr", car.get("production_year") or "Ungeklärt"),
         ("Erstzulassung", car.get("registration") or "Ungeklärt"),
         ("Außenfarbe", car.get("color") or "Ungeklärt"),
         ("Luftlinie", "Ungeklärt" if km is None else
@@ -331,7 +328,7 @@ def build(paths, output, build_id, now):
 <p><a href="{escape(SEARCH)}">Porsche Finder öffnen ↗</a> · <a href="feed.xml">RSS für relevante Änderungen</a></p></section>
 {''.join(groups)}
 <section><h2>Suchprofil und Bewertung</h2>
-<p>Produktionsjahr ab 2022, unfallfrei, keine roten oder weißen Fahrzeuge, funktionsfähiges ACC. Erwünscht sind 18-Wege-Sportsitze und Sport Chrono.</p>
+<p>Erstzulassung ab 2022, unfallfrei, keine roten oder weißen Fahrzeuge, ACC laut Inserat. Erwünscht sind 18-Wege-Sportsitze und Sport Chrono.</p>
 <p>A bis 80.000 € und 50.000 km · B bis 90.000 € und 60.000 km · C bis 95.000 € und 65.000 km.</p>
 <p>100 Punkte · {scoring}. Bei fehlenden Nachweisen bleibt der jeweilige Teilwert und gegebenenfalls der Gesamtscore offen.</p>
 <p>Ein als nicht mehr auffindbar dokumentiertes Inserat bleibt in der Historie. Preisangaben sind Angebotspreise zum Sichtungszeitpunkt.</p></section>
@@ -351,3 +348,4 @@ if __name__ == "__main__":
     parser.add_argument("--build-id", default="local")
     args = parser.parse_args()
     build(sorted((ROOT / "snapshots").glob("*.json")), args.output, args.build_id, datetime.now(timezone.utc))
+

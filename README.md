@@ -11,7 +11,7 @@ Eine automatisierte Porsche-Bestandserhebung ist nicht eingerichtet. Die [Abrufr
 ## Neue Bestandsaufnahme erfassen
 
 1. Ein neues JSON unter `snapshots/` nach dem vorhandenen Beispiel anlegen. Nur nachweisbare Angaben aus offiziellen Porsche-Inseraten übernehmen und den Umfang der Stichprobe unter `scope` angeben. `researched_at` ist der Zeitpunkt der Quellensichtung, `verified_at` der Abschluss der Prüfung. Beide Zeitstempel brauchen eine Zeitzone.
-2. `null` bedeutet ungeklärt. ACC-Präsenz und ACC-Funktion getrennt belegen. Erstzulassung und Modelljahr ersetzen das Produktionsjahr nicht. Eine Erstzulassung vor 2022 kann ein Produktionsjahr ab 2022 ausschließen. `color_group` ist `allowed`, `excluded` oder `null`. Weißnahe oder mehrdeutige Farben bleiben offen. Der Radius nutzt die Händlerkoordinaten und deren geschätzte Genauigkeit in km. Schneidet der Unsicherheitsbereich die 200-km-Grenze, bleibt der Radius offen.
+2. `null` bedeutet ungeklärt. ACC muss im Inserat angegeben sein; ein gesonderter Funktionsnachweis ist nicht erforderlich. Entscheidend ist die Erstzulassung ab 2022; das Produktionsjahr muss nicht ermittelt werden. `color_group` ist `allowed`, `excluded` oder `null`. Weißnahe oder mehrdeutige Farben bleiben offen. Der Radius nutzt die Händlerkoordinaten und deren geschätzte Genauigkeit in km. Schneidet der Unsicherheitsbereich die 200-km-Grenze, bleibt der Radius offen.
 3. Jeder Eintrag braucht das Originalinserat, die offizielle Händlerseite und die Bestandsnummer. Händlerdomain und Bestandsnummer bilden den gemeinsamen Schlüssel für Finder- und Händlerlinks. Bei einem bestätigten Verschwinden `not_found` erfassen. `sold` erfordert eine ausdrückliche Bestätigung. Ein in einer späteren Stichprobe ausgelassenes Angebot behält seinen letzten datierten Status.
 4. `python3 -m unittest -v` und `python3 finder.py` ausführen. Die Vorschau liegt unter `_site/index.html`. Nach einem Commit auf `main` baut und veröffentlicht GitHub Actions den validierten Stand.
 
@@ -19,9 +19,9 @@ Die Werte der ersten Stichprobe stammen aus dem [Finder-Inserat](https://finder.
 
 ## 100 Punkte
 
-- **Preis / Marktvergleich (30)**. Mindestens fünf andere innerhalb der letzten sieben Tage erfasste Inserate mit gleicher Variante, gleichem Produktionsjahr, gleich bestätigten Ausstattungsmerkmalen für Sitze und Sport Chrono und bis zu 10.000 km Laufleistungsdifferenz. Der Median der Angebotspreise ergibt 15 Punkte. Je Prozent Preisabweichung kommt ein Punkt hinzu oder fällt weg, begrenzt auf 0 bis 30.
+- **Preis / Marktvergleich (30)**. Mindestens fünf andere innerhalb der letzten sieben Tage erfasste Inserate mit gleicher Variante, gleichem Erstzulassungsjahr, gleich bestätigten Ausstattungsmerkmalen für Sitze und Sport Chrono und bis zu 10.000 km Laufleistungsdifferenz. Der Median der Angebotspreise ergibt 15 Punkte. Je Prozent Preisabweichung kommt ein Punkt hinzu oder fällt weg, begrenzt auf 0 bis 30.
 - **Zustand / Historie (25)**. Manuelle Bewertung mit Begründung anhand belegter Wartung, technischer Prüfung, Reifen, Bremsen und Garantie.
-- **Laufleistung / Produktionsjahr (20)**. Bis zu 12 Punkte linear zwischen 0 und 65.000 km. Bis zu 8 Punkte für das Produktionsjahr, abzüglich 2 je Kalenderjahr.
+- **Laufleistung / Erstzulassung (20)**. Bis zu 12 Punkte linear zwischen 0 und 65.000 km. Bis zu 8 Punkte für das Erstzulassungsjahr, abzüglich 2 je Kalenderjahr.
 - **18-Wege-Sportsitze (10) und Sport Chrono (5)**. Volle Punkte für bestätigte Ausstattung, null Punkte bei belegtem Fehlen, sonst offen.
 - **Farbe / Gesamteindruck (10)**. Manuelle Bewertung mit Begründung. Die obigen Rechenregeln sind Arbeitsannahmen und anhand echter Vergleichsfälle zu kalibrieren.
 
@@ -30,3 +30,4 @@ Ein Gesamtscore wird erst bei erfüllten Muss-Kriterien und vollständigen Teilw
 ## Veröffentlichung und Rechte
 
 Unter **Settings → Pages → Source** GitHub Actions auswählen. Der Build liest das Repository. Der Deployment-Job nutzt ausschließlich kurzlebige Berechtigungen für Pages und die Identitätsprüfung. Es gibt keine persönlichen Tokens, Passwörter, Benachrichtigungsadressen oder Repository-Schreibrechte im Workflow. Zum Pausieren den Workflow in GitHub Actions deaktivieren. Die zuletzt veröffentlichte Seite bleibt dabei verfügbar.
+

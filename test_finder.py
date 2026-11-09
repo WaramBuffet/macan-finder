@@ -14,14 +14,16 @@ NOW = datetime(2026, 11, 14, tzinfo=timezone.utc)
 
 class FinderTests(unittest.TestCase):
     def setUp(self):
-        self.car = {**CAR, "production_year": 2024, "acc_working": True}
+        self.car = {**CAR, "production_year": None, "acc_working": None}
 
     def test_must_criteria_and_thresholds(self):
-        self.assertEqual(assess(CAR)[0], "Prüfbedürftig")
+        self.assertEqual(assess(CAR)[0], "Bestätigter Profiltreffer")
         self.assertEqual(assess({**self.car, "acc": False, "acc_working": None})[0], "Ausgeschlossen")
         self.assertEqual(assess({**self.car, "accident_free": False})[0], "Ausgeschlossen")
         self.assertEqual(assess({**self.car, "color_group": "excluded"})[0], "Ausgeschlossen")
         self.assertEqual(assess({**CAR, "registration": "2021-12"})[0], "Ausgeschlossen")
+        self.assertEqual(assess({**CAR, "registration": None})[0], "Prüfbedürftig")
+        self.assertEqual(assess({**CAR, "acc": None, "acc_working": None})[0], "Prüfbedürftig")
         boundary = {**self.car, "price": 95000, "km": 65000}
         self.assertEqual(assess(boundary)[0], "Bestätigter Profiltreffer")
         self.assertEqual(tier(boundary), "C")
@@ -41,7 +43,7 @@ class FinderTests(unittest.TestCase):
         car = {**self.car, "key": "a", "researched_at": NOW.isoformat(), "condition_points": 20,
                "impression_points": 7}
         peers = [{**car, "key": str(i)} for i in range(5)]
-        self.assertEqual(score(CAR, [], NOW), (None, {}))
+        self.assertEqual(score({**CAR, "acc": None}, [], NOW), (None, {}))
         self.assertIsNone(score(car, peers[:4], NOW)[0])
         result, breakdown = score(car, peers, NOW)
         self.assertEqual(breakdown["Preis / Marktvergleich"], 15)
@@ -58,7 +60,7 @@ class FinderTests(unittest.TestCase):
     def test_history_and_rss_include_only_relevant_changes(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            paths = [self.snapshot(root, 8, [CAR]), self.snapshot(root, 9, [self.car]),
+            paths = [self.snapshot(root, 8, [{**CAR, "acc": None}]), self.snapshot(root, 9, [self.car]),
                      self.snapshot(root, 10, [self.car]), self.snapshot(root, 11, []),
                      self.snapshot(root, 12, [{**self.car, "price": 83900}]),
                      self.snapshot(root, 13, [{**self.car, "price": 83900, "availability": "not_found"}])]
@@ -78,10 +80,10 @@ class FinderTests(unittest.TestCase):
             output = Path(directory)
             build([SEED], output, "test", NOW)
             page = (output / "index.html").read_text()
-            self.assertIn("Prüfbedürftige Inserate · 1", page)
-            self.assertIn("Produktionsjahr ab 2022 · Ungeklärt", page)
+            self.assertIn("Bestätigte Profiltreffer · 1", page)
+            self.assertIn("Erstzulassung ab 2022 · Bestätigt", page)
             self.assertIn("85.890 €", page)
-            self.assertEqual(ET.parse(output / "feed.xml").findall("./channel/item"), [])
+            self.assertEqual(len(ET.parse(output / "feed.xml").findall("./channel/item")), 1)
             self.assertEqual((output / "build.txt").read_text().strip(), "test")
 
     def test_duplicate_or_invalid_snapshot_is_rejected(self):
@@ -97,3 +99,4 @@ class FinderTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
