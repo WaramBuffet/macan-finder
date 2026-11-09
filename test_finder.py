@@ -14,16 +14,18 @@ NOW = datetime(2026, 11, 14, tzinfo=timezone.utc)
 
 class FinderTests(unittest.TestCase):
     def setUp(self):
-        self.car = {**CAR, "production_year": None, "acc_working": None}
+        self.car = {**CAR, "production_year": None, "acc_working": None,
+                    "dealer_coordinates": [49.4521, 11.0767], "coordinate_accuracy_km": 1}
 
     def test_must_criteria_and_thresholds(self):
-        self.assertEqual(assess(CAR)[0], "Bestätigter Profiltreffer")
+        self.assertEqual(assess(CAR)[0], "Ausgeschlossen")
+        self.assertEqual(assess(self.car)[0], "Bestätigter Profiltreffer")
         self.assertEqual(assess({**self.car, "acc": False, "acc_working": None})[0], "Ausgeschlossen")
         self.assertEqual(assess({**self.car, "accident_free": False})[0], "Ausgeschlossen")
         self.assertEqual(assess({**self.car, "color_group": "excluded"})[0], "Ausgeschlossen")
-        self.assertEqual(assess({**CAR, "registration": "2021-12"})[0], "Ausgeschlossen")
-        self.assertEqual(assess({**CAR, "registration": None})[0], "Prüfbedürftig")
-        self.assertEqual(assess({**CAR, "acc": None, "acc_working": None})[0], "Prüfbedürftig")
+        self.assertEqual(assess({**self.car, "registration": "2021-12"})[0], "Ausgeschlossen")
+        self.assertEqual(assess({**self.car, "registration": None})[0], "Prüfbedürftig")
+        self.assertEqual(assess({**self.car, "acc": None, "acc_working": None})[0], "Prüfbedürftig")
         boundary = {**self.car, "price": 95000, "km": 65000}
         self.assertEqual(assess(boundary)[0], "Bestätigter Profiltreffer")
         self.assertEqual(tier(boundary), "C")
@@ -34,6 +36,8 @@ class FinderTests(unittest.TestCase):
     def test_unknown_distance_and_porsche_domains(self):
         self.assertIsNone(assess({**self.car, "dealer_coordinates": None})[1]["distance"])
         self.assertFalse(assess({**self.car, "dealer_coordinates": [53.55, 10.0]})[1]["distance"])
+        self.assertIsNone(assess({**self.car, "dealer_coordinates": [50.35, 11.0767], "coordinate_accuracy_km": 10})[1]["distance"])
+        self.assertTrue(assess({**self.car, "dealer_coordinates": [50.0, 11.0767], "coordinate_accuracy_km": 10})[1]["distance"])
         with self.assertRaises(ValueError):
             validate_vehicle({**CAR, "url": "https://finder.porsche.com.example.org/de/de-DE/details/x"}, 2026)
         with self.assertRaises(ValueError):
@@ -80,11 +84,23 @@ class FinderTests(unittest.TestCase):
             output = Path(directory)
             build([SEED], output, "test", NOW)
             page = (output / "index.html").read_text()
-            self.assertIn("Bestätigte Profiltreffer · 1", page)
+            self.assertIn("Bestätigte Profiltreffer · 0", page)
             self.assertIn("Erstzulassung ab 2022 · Bestätigt", page)
             self.assertIn("85.890 €", page)
-            self.assertEqual(len(ET.parse(output / "feed.xml").findall("./channel/item")), 1)
+            self.assertEqual(len(ET.parse(output / "feed.xml").findall("./channel/item")), 0)
             self.assertEqual((output / "build.txt").read_text().strip(), "test")
+
+    def test_drive_time_is_sourced_and_rendered(self):
+        drive = {"minutes": 65, "source": "https://example.org/route", "checked_at": "2026-11-09T10:00:00+01:00"}
+        validate_vehicle({**self.car, "drive_time": drive}, 2026)
+        with self.assertRaises(ValueError):
+            validate_vehicle({**self.car, "drive_time": {"minutes": 65}}, 2026)
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            build([self.snapshot(root, 9, [{**self.car, "drive_time": drive}])], root / "site", "test", NOW)
+            page = (root / "site/index.html").read_text()
+            self.assertIn("Fahrzeit ab Eckental-Brand: ca. 1 Std. 05 Min.", page)
+            self.assertIn("https://example.org/route", page)
 
     def test_duplicate_or_invalid_snapshot_is_rejected(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -99,4 +115,5 @@ class FinderTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
 

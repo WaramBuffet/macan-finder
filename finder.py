@@ -9,13 +9,14 @@ from email.utils import format_datetime
 from html import escape
 from pathlib import Path
 from statistics import median
-from urllib.parse import urlsplit
+from urllib.parse import urlencode, urlsplit
 from zoneinfo import ZoneInfo
 
 ROOT = Path(__file__).resolve().parent
 SITE = "https://warambuffet.github.io/macan-finder/"
 REPO = "https://github.com/WaramBuffet/macan-finder"
-SEARCH = "https://finder.porsche.com/de/de-DE/search/macan?condition=used&model=macan&category=macan-s&category=macan-gts"
+SEARCH = "https://finder.porsche.com/de/de-DE/search/macan?condition=used&model=macan&category=macan-s&category=macan-gts&position=N%C3%BCrnberg%2C49.45435%2C11.07346%2C100&equipment=acc-incl-pas"
+RADIUS_KM = 100
 BERLIN = ZoneInfo("Europe/Berlin")
 BOOLEAN_FIELDS = ("accident_free", "acc", "acc_working", "seats18", "chrono")
 AVAILABILITY = {
@@ -25,7 +26,7 @@ AVAILABILITY = {
 CHECKS = {
     "registration": "Erstzulassung ab 2022", "price": "Preis bis 95.000 €",
     "km": "Laufleistung bis 65.000 km", "color_group": "Außenfarbe weder Rot noch Weiß",
-    "distance": "Im Umkreis von 200 km", "accident_free": "Unfallfrei",
+    "distance": "Im Umkreis von 100 km", "accident_free": "Unfallfrei",
     "acc": "ACC laut Inserat vorhanden",
 }
 WEIGHTS = {
@@ -94,6 +95,16 @@ def validate_vehicle(car, year):
     for field in ("condition", "impression"):
         if car.get(f"{field}_points") is not None and not car.get(f"{field}_note"):
             raise ValueError(f"Begründung für {field} fehlt")
+    travel = car.get("drive_time")
+    if travel is not None:
+        if not isinstance(travel, dict):
+            raise ValueError("Fahrzeit muss eine Quellenangabe enthalten")
+        bounded(travel.get("minutes"), 1, 1440, "Fahrzeit")
+        source = urlsplit(travel.get("source", ""))
+        if (travel.get("minutes") is None or source.scheme != "https" or not source.hostname
+                or source.username is not None or source.password is not None or not travel.get("checked_at")):
+            raise ValueError("Fahrzeit braucht Minuten, HTTPS-Quelle und Prüfzeitpunkt")
+        moment(travel["checked_at"])
     registration = car.get("registration")
     if registration is not None:
         if not re.fullmatch(r"20\d\d-(0[1-9]|1[0-2])", registration):
@@ -133,9 +144,9 @@ def assess(car):
     checks["distance"] = None
     if km is not None:
         margin = car["coordinate_accuracy_km"]
-        if km + margin <= 200:
+        if km + margin <= RADIUS_KM:
             checks["distance"] = True
-        elif km - margin > 200:
+        elif km - margin > RADIUS_KM:
             checks["distance"] = False
     if False in checks.values():
         state = "Ausgeschlossen"
@@ -270,11 +281,22 @@ def card(car, observations, result, now):
     )
     freshness = " · älter als 48 Stunden" if now - moment(car["researched_at"]) > timedelta(hours=48) else ""
     label = "Score offen" if total is None else f"{total}/100 Punkte"
+    route = "https://www.google.com/maps/dir/?" + urlencode({
+        "api": "1", "origin": "Brand, 90542 Eckental, Deutschland",
+        "destination": car["dealer"], "travelmode": "driving"})
+    drive = car.get("drive_time")
+    if drive:
+        minutes = drive["minutes"]
+        duration = f"{minutes // 60} Std. {minutes % 60:02d} Min." if minutes >= 60 else f"{minutes} Min."
+        drive_label = (f'ca. {duration} · <a href="{escape(drive["source"], quote=True)}">Quelle</a>'
+                       f' · Stand {display_time(drive["checked_at"])}')
+    else:
+        drive_label = "noch nicht ermittelt"
     return f"""
     <article id="{escape(car['key'])}">
       <p class="eyebrow">{escape(state)} · Suchbereich {tier(car)} · {label}</p>
       <h3>Porsche Macan {car['model']}</h3>
-      <p><a href="{escape(car['dealer_url'])}">{escape(car['dealer'])}</a> · Bestand {escape(car['stock'])}</p>
+      <p><a href="{escape(car['dealer_url'])}">{escape(car['dealer'])}</a> · Fahrzeit ab Eckental-Brand: {drive_label} · <a href="{escape(route, quote=True)}">Route ansehen ↗</a> · Bestand {escape(car['stock'])}</p>
       <dl>{details}</dl>
       <p class="muted">Status bei letzter Sichtung: {AVAILABILITY[car['availability']]}{freshness}<br>
       Erstfund {display_time(observations[0]['researched_at'])} · Letzte Sichtung {display_time(car['researched_at'])}</p>
@@ -317,7 +339,7 @@ def build(paths, output, build_id, now):
 <link rel="stylesheet" href="style.css">
 <main>
 <header><p class="eyebrow">Gebrauchtwagen · Offizielle Porsche-Zentren</p><h1>Macan Finder</h1>
-<p>Porsche Macan S und GTS · 200 km Luftlinie um Nürnberg</p></header>
+<p>Porsche Macan S und GTS · 100 km Luftlinie um Nürnberg</p></header>
 <section class="notice" aria-label="Datenstand">
 <strong>Manuell geprüfter Datenstand</strong>
 <p>Der tägliche Seitenlauf verarbeitet die hinterlegten Stichproben. Ein automatischer Porsche-Abruf ist nicht eingerichtet. Die erfassten Inserate sind eine Stichprobe.</p>
@@ -348,4 +370,5 @@ if __name__ == "__main__":
     parser.add_argument("--build-id", default="local")
     args = parser.parse_args()
     build(sorted((ROOT / "snapshots").glob("*.json")), args.output, args.build_id, datetime.now(timezone.utc))
+
 
