@@ -17,6 +17,7 @@ SITE = "https://warambuffet.github.io/macan-finder/"
 REPO = "https://github.com/WaramBuffet/macan-finder"
 SEARCH = "https://finder.porsche.com/de/de-DE/search/macan?condition=used&model=macan&category=macan-s&category=macan-gts&position=N%C3%BCrnberg%2C49.45435%2C11.07346%2C100&equipment=acc-incl-pas"
 RADIUS_KM = 100
+ALLOWED_DEALERS = {"amberg", "bamberg", "bayreuth", "nuernberg", "regensburg", "ingolstadt"}
 BERLIN = ZoneInfo("Europe/Berlin")
 BOOLEAN_FIELDS = ("accident_free", "acc", "acc_working", "seats18", "chrono")
 AVAILABILITY = {
@@ -315,7 +316,7 @@ def build(paths, output, build_id, now):
     latest = [entries[-1] for entries in history.values()]
     confirmed, pending, archived = [], [], []
     for car in latest:
-        if assess(car)[1]["distance"] is not True:
+        if urlsplit(car["dealer_url"]).hostname.split(".")[0] not in ALLOWED_DEALERS or assess(car)[1]["distance"] is not True:
             continue
         state, _ = assess(car)
         result = score(car, latest, now)
