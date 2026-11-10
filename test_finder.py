@@ -103,7 +103,7 @@ class FinderTests(unittest.TestCase):
             self.assertIn("https://example.org/route", page)
 
     def test_only_selected_dealers_are_inside_radius_and_listed(self):
-        self.assertEqual(set(DEALERS), {"amberg", "bamberg", "bayreuth", "nuernberg", "regensburg", "ingolstadt"})
+        self.assertEqual(set(DEALERS), {"amberg", "bamberg", "bayreuth", "nuernberg", "regensburg", "ingolstadt", "wuerzburg"})
         self.assertTrue(all(dealer_distance(value["coordinates"]) <= 100 for value in DEALERS.values()))
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory)

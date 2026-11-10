@@ -1,0 +1,30 @@
+{
+  "researched_at": "2026-11-10T10:20:00+01:00",
+  "verified_at": "2026-11-10T10:21:00+01:00",
+  "scope": "Unvollständige Teilprüfung: ein Porsche-Originalinserat des Porsche Zentrums Würzburg einzeln geprüft und wegen Erstzulassung 2020 und nicht unfallfrei ausgeschlossen. Der zentrale Porsche Finder war über den verfügbaren Webzugang nicht erreichbar; kein interaktiver Browser verfügbar. Weitere Angebote wurden in diesem Lauf nicht erneut geprüft; ihre letzte Sichtung bleibt unverändert.",
+  "vehicles": [
+    {
+      "url": "https://wuerzburg.porsche.de/de/inventory/porsche/porsche-macan-gts-gebraucht-V4LRXE",
+      "dealer": "Porsche Zentrum Würzburg",
+      "dealer_url": "https://wuerzburg.porsche.de/de/contact",
+      "stock": "GW-B62536",
+      "model": "GTS",
+      "production_year": null,
+      "registration": "2020-12",
+      "price": 58890,
+      "km": 79900,
+      "color": "Vulkangraumetallic",
+      "color_group": "allowed",
+      "dealer_coordinates": [49.840217, 10.009811],
+      "coordinate_accuracy_km": 1,
+      "dealer_coordinate_source": "https://www.goingelectric.de/stromtankstellen/Deutschland/Estenfeld/Porsche-Zentrum-Wuerzburg-Porschestrasse-2/73603/",
+      "accident_free": false,
+      "acc": null,
+      "acc_working": null,
+      "seats18": null,
+      "chrono": null,
+      "warranty_months": 12,
+      "availability": "listed"
+    }
+  ]
+}

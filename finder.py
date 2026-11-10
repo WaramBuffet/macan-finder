@@ -31,6 +31,8 @@ DEALERS = {
                    "coordinates": (48.99359, 12.10424), "drive_minutes": 72},
     "ingolstadt": {"name": "Porsche Zentrum Ingolstadt", "url": "https://ingolstadt.porsche.de/de/contact",
                    "coordinates": (48.748902, 11.460769), "drive_minutes": 65},
+    "wuerzburg": {"name": "Porsche Zentrum Würzburg", "url": "https://wuerzburg.porsche.de/de/contact",
+                  "coordinates": (49.840217, 10.009811), "drive_minutes": 63},
 }
 ALLOWED_DEALERS = set(DEALERS)
 DEALER_DRIVE_MINUTES = {key: value["drive_minutes"] for key, value in DEALERS.items()}
