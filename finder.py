@@ -302,8 +302,10 @@ def rss(output, events):
     ET.ElementTree(root).write(output / "feed.xml", encoding="utf-8", xml_declaration=True)
 
 
-def card(car, observations, result, now):
+def card(car, observations, result, now, previous_sighting=False):
     state, checks = assess(car)
+    if previous_sighting:
+        state = "Frühere Sichtung – aktuell ungeprüft"
     total, points = result
     km = distance(car)
     values = [
@@ -365,20 +367,24 @@ def status(value):
 def build(paths, output, build_id, now):
     snapshots, history, events = load_history(paths, now)
     latest = [entries[-1] for entries in history.values()]
+    latest_research = snapshots[-1]["researched_at"] if snapshots else None
     confirmed, pending, archived = [], [], []
     for car in latest:
         if urlsplit(car["dealer_url"]).hostname.split(".")[0] not in ALLOWED_DEALERS or assess(car)[1]["distance"] is not True:
             continue
         state, _ = assess(car)
         result = score(car, latest, now)
-        group = {"Bestätigter Profiltreffer": confirmed, "Prüfbedürftig": pending}.get(state, archived)
+        previous_sighting = car["researched_at"] != latest_research and car["availability"] == "listed"
+        group = pending if previous_sighting and state == "Bestätigter Profiltreffer" else {"Bestätigter Profiltreffer": confirmed, "Prüfbedürftig": pending}.get(state, archived)
         group.append((car, result))
     groups = []
     for name, entries in (("Bestätigte Profiltreffer", confirmed), ("Prüfbedürftige Inserate", pending),
                           ("Archiv und ausgeschlossene Angebote", archived)):
         entries.sort(key=lambda row: (-(row[1][0] if row[1][0] is not None else -1),
                                       row[0].get("price") or math.inf))
-        cards = "".join(card(car, history[car["key"]], result, now) for car, result in entries)
+        cards = "".join(card(car, history[car["key"]], result, now,
+                             car["researched_at"] != latest_research and car["availability"] == "listed")
+                        for car, result in entries)
         groups.append(f"<section><h2>{name} · {len(entries)}</h2>{cards or '<p>Keine Einträge im erfassten Bestand.</p>'}</section>")
     last = snapshots[-1] if snapshots else None
     research = display_time(last["researched_at"]) if last else "Kein Datenstand"
