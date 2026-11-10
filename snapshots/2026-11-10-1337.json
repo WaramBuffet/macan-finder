@@ -1,0 +1,69 @@
+{
+  "researched_at": "2026-11-10T13:36:00+01:00",
+  "verified_at": "2026-11-10T13:37:00+01:00",
+  "scope": "Manuelle Teilstichprobe am 10.11.2026: öffentlicher Porsche Finder, gebrauchte Macan S/GTS, ACC-Filter, 100 km um Nürnberg. Sechs Treffer auf einer Ergebnisseite gesichtet. Ein Bamberger GTS und ein Regensburger GTS einzeln geprüft; letzterer wegen fehlender Unfallfreiheit ausgeschlossen. Drei Treffer vor 2022 und ein rotes Fahrzeug bereits anhand der Übersicht ausgeschlossen. Die Abfrage deckt nur den verwendeten ACC-Filter ab und ist keine vollständige Markterhebung.",
+  "vehicles": [
+    {
+      "url": "https://finder.porsche.com/de/de-DE/details/porsche-macan-gts-gebraucht-44Q4WE",
+      "dealer": "Porsche Zentrum Bamberg",
+      "dealer_url": "https://bamberg.porsche.de/de/contact",
+      "stock": "28561",
+      "model": "GTS",
+      "production_year": null,
+      "registration": "2023-12",
+      "price": 72900,
+      "km": 75900,
+      "color": "Tiefschwarzmetallic",
+      "color_group": "allowed",
+      "dealer_coordinates": [
+        49.911371,
+        10.903194
+      ],
+      "coordinate_accuracy_km": 1,
+      "dealer_coordinate_source": "https://www.goingelectric.de/stromtankstellen/Deutschland/Bamberg/Porsche-Zentrum-Kaerntenstrasse-12/75127/",
+      "accident_free": true,
+      "acc": true,
+      "acc_working": null,
+      "seats18": true,
+      "chrono": true,
+      "warranty_months": 12,
+      "availability": "listed",
+      "drive_time": {
+        "minutes": 39,
+        "source": "https://www.google.com/maps/dir/?api=1&origin=Brand%2C+90542+Eckental%2C+Deutschland&destination=Porsche+Zentrum+Bamberg&travelmode=driving",
+        "checked_at": "2026-11-09T22:00:00+01:00"
+      }
+    },
+    {
+      "url": "https://finder.porsche.com/de/de-DE/details/porsche-macan-gts-gebraucht-6G23QX",
+      "dealer": "Porsche Zentrum Regensburg",
+      "dealer_url": "https://regensburg.porsche.de/de/contact",
+      "stock": "45378",
+      "model": "GTS",
+      "production_year": null,
+      "registration": "2023-05",
+      "price": 62900,
+      "km": 107950,
+      "color": "Vulkangraumetallic",
+      "color_group": "allowed",
+      "dealer_coordinates": [
+        48.99359,
+        12.10424
+      ],
+      "coordinate_accuracy_km": 1,
+      "dealer_coordinate_source": "https://mapcarta.com/W29503237",
+      "accident_free": false,
+      "acc": true,
+      "acc_working": null,
+      "seats18": true,
+      "chrono": true,
+      "warranty_months": 12,
+      "availability": "listed",
+      "drive_time": {
+        "minutes": 72,
+        "source": "https://www.google.com/maps/dir/?api=1&origin=Brand%2C+90542+Eckental%2C+Deutschland&destination=Porsche+Zentrum+Regensburg&travelmode=driving",
+        "checked_at": "2026-11-09T22:00:00+01:00"
+      }
+    }
+  ]
+}
