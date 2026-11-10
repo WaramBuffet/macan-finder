@@ -1,7 +1,7 @@
 {
   "researched_at": "2026-11-10T20:56:00+01:00",
-  "verified_at": "2026-11-10T20:57:00+01:00",
-  "scope": "Teilrecherche am 10.11.2026 etwa 20:54–20:57 MEZ: Porsche Finder, gebrauchte Macan S/GTS, Erstzulassung ab 2022, Nürnberg 200 km, höchstens 85.000 € und 65.000 km. Beide Ergebnisseiten gesichtet; sechs Inserate hier anhand der Originaldetails dokumentiert. Weitere angezeigte Kandidaten und die Bestände einzelner Porsche-Zentren außerhalb des Finders wurden nicht vollständig geprüft. Keine Vollerhebung. Modellpflege nach Leistung gemäß Porsche Newsroom vom 20.07.2021 (Macan S 280 kW, GTS 324 kW).",
+  "verified_at": "2026-11-10T20:58:37+01:00",
+  "scope": "Teilrecherche am 10.11.2026 etwa 20:54–20:58 MEZ: Porsche Finder, gebrauchte Macan S/GTS, Erstzulassung ab 2022, Nürnberg 200 km, höchstens 85.000 € und 65.000 km. Beide Ergebnisseiten gesichtet; acht Inserate hier anhand der Originaldetails dokumentiert. Weitere angezeigte Kandidaten und die Bestände einzelner Porsche-Zentren außerhalb des Finders wurden nicht vollständig geprüft. Keine Vollerhebung. Modellpflege nach Leistung gemäß Porsche Newsroom vom 20.07.2021 (Macan S 280 kW, GTS 324 kW).",
   "vehicles": [
     {
       "url": "https://finder.porsche.com/de/de-DE/details/porsche-macan-gts-gebraucht-Z5XEQ2",
@@ -179,6 +179,60 @@
       "surround_view": null,
       "privacy_glass": true,
       "badge_removed": false
+    },
+    {
+      "url": "https://finder.porsche.com/de/de-DE/details/porsche-macan-s-gebraucht-G0XP70",
+      "dealer": "Porsche Zentrum Landshut",
+      "dealer_url": "https://landshut.porsche.de/de/contact",
+      "stock": "PLB27717-GW",
+      "model": "S",
+      "registration": "2022-12",
+      "price": 66790,
+      "km": 61500,
+      "color": "Tiefschwarzmetallic",
+      "dealer_coordinates": [
+        48.567968,
+        12.155927
+      ],
+      "color_group": "allowed",
+      "coordinate_accuracy_km": 1,
+      "accident_free": true,
+      "acc": false,
+      "warranty_months": 12,
+      "availability": "listed",
+      "generation_iii": true,
+      "owners": 1,
+      "rear_camera": true,
+      "privacy_glass": true,
+      "surround_view": null,
+      "badge_removed": null
+    },
+    {
+      "url": "https://finder.porsche.com/de/de-DE/details/porsche-macan-gts-gebraucht-EKO4EW",
+      "dealer": "Porsche Zentrum Böblingen",
+      "dealer_url": "https://boeblingen.porsche.de/de/contact",
+      "stock": "BB-2625",
+      "model": "GTS",
+      "registration": "2023-11",
+      "price": 79880,
+      "km": 26550,
+      "color": "Kreide",
+      "dealer_coordinates": [
+        48.690139,
+        9.005312
+      ],
+      "color_group": "allowed",
+      "coordinate_accuracy_km": 1,
+      "accident_free": true,
+      "acc": false,
+      "warranty_months": 12,
+      "availability": "listed",
+      "generation_iii": true,
+      "owners": 1,
+      "rear_camera": true,
+      "privacy_glass": true,
+      "surround_view": null,
+      "badge_removed": null
     }
   ]
 }
