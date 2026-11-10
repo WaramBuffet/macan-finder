@@ -35,7 +35,9 @@ DEALERS = {
                   "coordinates": (49.840217, 10.009811), "drive_minutes": 63},
     "aschaffenburg": {"name": "Porsche Zentrum Aschaffenburg", "url": "https://aschaffenburg.porsche.de/de/contact", "coordinates": (49.9651, 9.1728), "drive_minutes": 109, "drive_checked_at": "10.11.2026"},
     "heilbronn": {"name": "Porsche Zentrum Heilbronn", "url": "https://heilbronn.porsche.de/de/contact", "coordinates": (49.1213, 9.2231), "drive_minutes": 120, "drive_checked_at": "10.11.2026"},
-    "schwaebisch-gmuend": {"name": "Porsche Zentrum Schwäbisch Gmünd", "url": "https://schwaebisch-gmuend.porsche.de/de/contact", "coordinates": (48.7915, 9.7721), "drive_minutes": None},
+    "schwaebisch-gmuend": {"name": "Porsche Zentrum Schwäbisch Gmünd", "url": "https://schwaebisch-gmuend.porsche.de/de/contact", "coordinates": (48.7915, 9.7721), "drive_minutes": 120, "drive_checked_at": "10.11.2026"},
+    "darmstadt": {"name": "Porsche Zentrum Darmstadt", "url": "https://darmstadt.porsche.de/de/contact", "coordinates": (49.8630131, 8.6296094), "drive_minutes": 141, "drive_checked_at": "10.11.2026"},
+    "frankfurt": {"name": "Porsche Zentrum Frankfurt", "url": "https://frankfurt.porsche.de/de/contact", "coordinates": (50.1160256, 8.7273209), "drive_minutes": 124, "drive_checked_at": "10.11.2026"},
     "augsburg": {"name": "Porsche Zentrum Augsburg", "url": "https://augsburg.porsche.de/de/contact", "coordinates": (48.4083, 10.8721), "drive_minutes": None},
     "landshut": {"name": "Porsche Zentrum Landshut", "url": "https://landshut.porsche.de/de/contact", "coordinates": (48.567968, 12.155927), "drive_minutes": None},
     "goeppingen": {"name": "Porsche Zentrum Göppingen", "url": "https://goeppingen.porsche.de/de/contact", "coordinates": (48.694249, 9.666462), "drive_minutes": None},
@@ -364,7 +366,7 @@ def card(car, observations, result, now, previous_sighting=False):
       <h3>Porsche Macan {car['model']}</h3>
       <p><a href="{escape(car['dealer_url'])}">{escape(car['dealer'])}</a> · Fahrzeit ab Eckental-Brand: {drive_label} · <a href="{escape(route, quote=True)}">Route ansehen ↗</a> · Bestand {escape(car['stock'])}</p>
       <dl>{details}</dl>
-      <p class="muted">Status bei letzter Sichtung: {AVAILABILITY[car['availability']]}{freshness}<br>
+      <p class="muted">Status bei letzter Sichtung: {AVAILABILITY[car['availability']]}{escape(' · ' + car.get('availability_note', '')) if car.get('availability_note') else ''}{freshness}<br>
       Erstfund {display_time(observations[0]['researched_at'])} · Letzte Sichtung {display_time(car['researched_at'])}</p>
       <p><a href="{escape(car['url'])}">Originalinserat öffnen ↗</a></p>
       <details><summary>Muss-Kriterien und Bewertung</summary><ul>{criteria}</ul>
