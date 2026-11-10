@@ -1,6 +1,6 @@
 # Macan Finder
 
-Porsche Macan S und GTS im Umkreis von 100 km Luftlinie um Nürnberg. Die [Webseite](https://warambuffet.github.io/macan-finder/) zeigt geprüfte Angebote, offene Kriterien und den Preisverlauf. Der [RSS-Feed](https://warambuffet.github.io/macan-finder/feed.xml) enthält ausschließlich erstmals bestätigte Profiltreffer und deren Preisänderungen. Für Benachrichtigungen den Feed in einem RSS-Reader abonnieren.
+Porsche Macan S und GTS im Umkreis von 100 km Luftlinie um Nürnberg. Berücksichtigt werden ausschließlich die Porsche Zentren Amberg, Bamberg, Bayreuth, Nürnberg-Fürth-Erlangen, Regensburg und Ingolstadt; der Radius wird zusätzlich aus dokumentierten Standortkoordinaten geprüft. Die [Webseite](https://warambuffet.github.io/macan-finder/) zeigt geprüfte Angebote, offene Kriterien, den Preisverlauf sowie die hinterlegten Fahrzeit-Richtwerte ab Eckental-Brand. Der [RSS-Feed](https://warambuffet.github.io/macan-finder/feed.xml) enthält ausschließlich erstmals bestätigte Profiltreffer und deren Preisänderungen. Für Benachrichtigungen den Feed in einem RSS-Reader abonnieren.
 
 ## Datenstand
 
@@ -15,7 +15,7 @@ Eine automatisierte Porsche-Bestandserhebung ist nicht eingerichtet. Die [Abrufr
 3. Jeder Eintrag braucht das Originalinserat, die offizielle Händlerseite und die Bestandsnummer. Händlerdomain und Bestandsnummer bilden den gemeinsamen Schlüssel für Finder- und Händlerlinks. Bei einem bestätigten Verschwinden `not_found` erfassen. `sold` erfordert eine ausdrückliche Bestätigung. Ein in einer späteren Stichprobe ausgelassenes Angebot behält seinen letzten datierten Status.
 4. `python3 -m unittest -v` und `python3 finder.py` ausführen. Die Vorschau liegt unter `_site/index.html`. Nach einem Commit auf `main` baut und veröffentlicht GitHub Actions den validierten Stand.
 
-Die optionale Fahrzeit ab 90542 Eckental-Brand wird als `"drive_time": {"minutes": 65, "source": "https://…", "checked_at": "2026-11-09T10:00:00+01:00"}` erfasst. Minuten, HTTPS-Quellenlink und ein Prüfzeitpunkt mit Zeitzone sind gemeinsam erforderlich. Nur aus einer geeigneten Routenberechnung übernehmen; die Beispielzahl ist kein tatsächlicher Fahrtwert. Ohne Nachweis zeigt die Übersicht „noch nicht ermittelt“ und einen Link zur Routenplanung. Die Werte sind keine Live-Verkehrsvorhersage.
+Die Fahrzeit ab 90542 Eckental-Brand wird als `"drive_time": {"minutes": 65, "source": "https://…", "checked_at": "2026-11-09T10:00:00+01:00"}` erfasst. Minuten, HTTPS-Quellenlink und ein Prüfzeitpunkt mit Zeitzone sind gemeinsam erforderlich. Für die sechs ausgewählten Zentren sind datierte Google-Maps-Richtwerte zentral hinterlegt und werden nicht bei jedem Lauf neu berechnet. Es handelt sich um Momentaufnahmen, nicht um statistische Durchschnittswerte oder Live-Verkehrsvorhersagen. Eine spätere Einzelstichprobe darf einen zentralen Richtwert mit einer neu belegten Fahrzeit überschreiben.
 
 Die Werte der ersten Stichprobe stammen aus dem [Finder-Inserat](https://finder.porsche.com/de/de-DE/details/porsche-macan-s-gebraucht-4GW7L5). Die [Händleranschrift](https://aschaffenburg.porsche.de/de/contact) liegt in Aschaffenburg. Die Entfernung wird mit Stadtkoordinaten und einer Unsicherheit von 10 km angenähert.
 

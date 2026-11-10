@@ -16,4 +16,7 @@ dl { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(11rem, 10
 dt, .muted { color: #505b55; font-size: .9rem; }
 dd { margin: .1rem 0 0; font-weight: 600; }
 summary { cursor: pointer; padding: .45rem 0; font-weight: 650; }
+table { width: 100%; border-collapse: collapse; display: block; overflow-x: auto; background: #fff; }
+th, td { padding: .7rem .8rem; border-bottom: 1px solid #cecfc6; text-align: left; vertical-align: top; }
+th { color: #41635d; font-size: .82rem; text-transform: uppercase; letter-spacing: .035em; }
 footer { padding-top: 1rem; border-top: 1px solid #cecfc6; }

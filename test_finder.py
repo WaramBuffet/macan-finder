@@ -5,7 +5,7 @@ import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
 from pathlib import Path
 
-from finder import assess, build, load_history, score, tier, validate_vehicle
+from finder import DEALERS, assess, build, dealer_distance, load_history, score, tier, validate_vehicle
 
 SEED = Path(__file__).parent / "snapshots" / "2026-11-08.json"
 CAR = json.loads(SEED.read_text())["vehicles"][0]
@@ -101,6 +101,18 @@ class FinderTests(unittest.TestCase):
             page = (root / "site/index.html").read_text()
             self.assertIn("Fahrzeit ab Eckental-Brand: ca. 1 Std. 05 Min.", page)
             self.assertIn("https://example.org/route", page)
+
+    def test_only_selected_dealers_are_inside_radius_and_listed(self):
+        self.assertEqual(set(DEALERS), {"amberg", "bamberg", "bayreuth", "nuernberg", "regensburg", "ingolstadt"})
+        self.assertTrue(all(dealer_distance(value["coordinates"]) <= 100 for value in DEALERS.values()))
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory)
+            build([SEED], output, "test", NOW)
+            page = (output / "index.html").read_text()
+            for value in DEALERS.values():
+                self.assertIn(value["name"], page)
+                self.assertIn(f'ca. {value["drive_minutes"]} Min.' if value["drive_minutes"] < 60
+                              else f'ca. {value["drive_minutes"] // 60} Std. {value["drive_minutes"] % 60:02d} Min.', page)
 
     def test_duplicate_or_invalid_snapshot_is_rejected(self):
         with tempfile.TemporaryDirectory() as directory:

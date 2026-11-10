@@ -17,8 +17,24 @@ SITE = "https://warambuffet.github.io/macan-finder/"
 REPO = "https://github.com/WaramBuffet/macan-finder"
 SEARCH = "https://finder.porsche.com/de/de-DE/search/macan?condition=used&model=macan&category=macan-s&category=macan-gts&position=N%C3%BCrnberg%2C49.45435%2C11.07346%2C100&equipment=acc-incl-pas"
 RADIUS_KM = 100
-ALLOWED_DEALERS = {"amberg", "bamberg", "bayreuth", "nuernberg", "regensburg", "ingolstadt"}
-DEALER_DRIVE_MINUTES = {"amberg": 56, "bamberg": 39, "bayreuth": 44, "nuernberg": 19, "regensburg": 72, "ingolstadt": 65}
+NUREMBERG = (49.45435, 11.07346)
+DEALERS = {
+    "amberg": {"name": "Porsche Zentrum Amberg", "url": "https://amberg.porsche.de/de/contact",
+               "coordinates": (49.4355, 11.8888), "drive_minutes": 56},
+    "bamberg": {"name": "Porsche Zentrum Bamberg", "url": "https://bamberg.porsche.de/de/contact",
+                "coordinates": (49.911371, 10.903194), "drive_minutes": 39},
+    "bayreuth": {"name": "Porsche Zentrum Bayreuth", "url": "https://bayreuth.porsche.de/de/contact",
+                 "coordinates": (49.909245, 11.606718), "drive_minutes": 44},
+    "nuernberg": {"name": "Porsche Zentrum Nürnberg-Fürth-Erlangen", "url": "https://nuernberg.porsche.de/de/contact",
+                  "coordinates": (49.485290, 11.058936), "drive_minutes": 19},
+    "regensburg": {"name": "Porsche Zentrum Regensburg", "url": "https://regensburg.porsche.de/de/contact",
+                   "coordinates": (48.99359, 12.10424), "drive_minutes": 72},
+    "ingolstadt": {"name": "Porsche Zentrum Ingolstadt", "url": "https://ingolstadt.porsche.de/de/contact",
+                   "coordinates": (48.748902, 11.460769), "drive_minutes": 65},
+}
+ALLOWED_DEALERS = set(DEALERS)
+DEALER_DRIVE_MINUTES = {key: value["drive_minutes"] for key, value in DEALERS.items()}
+DEALER_DRIVE_CHECKED_AT = "2026-11-09T22:00:00+01:00"
 BERLIN = ZoneInfo("Europe/Berlin")
 BOOLEAN_FIELDS = ("accident_free", "acc", "acc_working", "seats18", "chrono")
 AVAILABILITY = {
@@ -127,9 +143,40 @@ def distance(car):
     if car.get("dealer_coordinates") is None:
         return None
     lat, lon = map(math.radians, car["dealer_coordinates"])
-    nlat, nlon = map(math.radians, (49.4521, 11.0767))
+    nlat, nlon = map(math.radians, NUREMBERG)
     hav = math.sin((lat - nlat) / 2)**2 + math.cos(lat) * math.cos(nlat) * math.sin((lon - nlon) / 2)**2
     return 6371 * 2 * math.asin(math.sqrt(min(1, hav)))
+
+
+def dealer_distance(coordinates):
+    lat, lon = map(math.radians, coordinates)
+    nlat, nlon = map(math.radians, NUREMBERG)
+    hav = math.sin((lat - nlat) / 2)**2 + math.cos(lat) * math.cos(nlat) * math.sin((lon - nlon) / 2)**2
+    return 6371 * 2 * math.asin(math.sqrt(min(1, hav)))
+
+
+def route_url(destination):
+    return "https://www.google.com/maps/dir/?" + urlencode({
+        "api": "1", "origin": "Brand, 90542 Eckental, Deutschland",
+        "destination": destination, "travelmode": "driving"})
+
+
+def dealer_overview():
+    rows = []
+    for dealer in DEALERS.values():
+        km = dealer_distance(dealer["coordinates"])
+        minutes = dealer["drive_minutes"]
+        duration = f"{minutes // 60} Std. {minutes % 60:02d} Min." if minutes >= 60 else f"{minutes} Min."
+        rows.append(
+            f'<tr><td><a href="{escape(dealer["url"], quote=True)}">{escape(dealer["name"])}</a></td>'
+            f'<td>ca. {km:.1f} km</td><td>ca. {duration}</td>'
+            f'<td><a href="{escape(route_url(dealer["name"]), quote=True)}">Google Maps</a> · Abfrage 09.11.2026</td></tr>'
+        )
+    return ("<section><h2>Berücksichtigte Porsche Zentren</h2>"
+            "<p>Die Luftlinie ist aus den dokumentierten Standortkoordinaten berechnet. Die Fahrzeiten sind dauerhaft "
+            "hinterlegte Richtwerte aus Google-Maps-Abfragen vom 09.11.2026, keine Live- oder statistischen Durchschnittswerte.</p>"
+            "<table><thead><tr><th>Zentrum</th><th>Luftlinie ab Nürnberg</th><th>Fahrzeit ab Eckental-Brand</th>"
+            "<th>Quelle</th></tr></thead><tbody>" + "".join(rows) + "</tbody></table></section>")
 
 
 def assess(car):
@@ -282,13 +329,11 @@ def card(car, observations, result, now):
     )
     freshness = " · älter als 48 Stunden" if now - moment(car["researched_at"]) > timedelta(hours=48) else ""
     label = "Score offen" if total is None else f"{total}/100 Punkte"
-    route = "https://www.google.com/maps/dir/?" + urlencode({
-        "api": "1", "origin": "Brand, 90542 Eckental, Deutschland",
-        "destination": car["dealer"], "travelmode": "driving"})
+    route = route_url(car["dealer"])
     dealer_id = (urlsplit(car["dealer_url"]).hostname or "").split(".")[0]
     minutes = DEALER_DRIVE_MINUTES.get(dealer_id)
     fixed_drive = not car.get("drive_time") and minutes is not None
-    drive = car.get("drive_time") or ({"minutes": minutes, "source": route, "checked_at": "2026-11-09T22:00:00+01:00"} if minutes else None)
+    drive = car.get("drive_time") or ({"minutes": minutes, "source": route, "checked_at": DEALER_DRIVE_CHECKED_AT} if minutes else None)
     if drive:
         minutes = drive["minutes"]
         duration = f"{minutes // 60} Std. {minutes % 60:02d} Min." if minutes >= 60 else f"{minutes} Min."
@@ -354,6 +399,7 @@ def build(paths, output, build_id, now):
 <div><dt>Veröffentlichung</dt><dd><a href="{REPO}/deployments">GitHub-Protokoll</a></dd></div></dl>
 <p>{scope}</p>
 <p><a href="{escape(SEARCH)}">Porsche Finder öffnen ↗</a> · <a href="feed.xml">RSS für relevante Änderungen</a></p></section>
+{dealer_overview()}
 {''.join(groups)}
 <section><h2>Suchprofil und Bewertung</h2>
 <p>Erstzulassung ab 2022, unfallfrei, keine roten oder weißen Fahrzeuge, ACC laut Inserat. Erwünscht sind 18-Wege-Sportsitze und Sport Chrono.</p>
