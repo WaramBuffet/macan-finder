@@ -33,24 +33,30 @@ DEALERS = {
                    "coordinates": (48.748902, 11.460769), "drive_minutes": 65},
     "wuerzburg": {"name": "Porsche Zentrum Würzburg", "url": "https://wuerzburg.porsche.de/de/contact",
                   "coordinates": (49.840217, 10.009811), "drive_minutes": 63},
-    "aschaffenburg": {"name": "Porsche Zentrum Aschaffenburg", "url": "https://aschaffenburg.porsche.de/de/contact", "coordinates": (49.9651, 9.1728), "drive_minutes": 109, "drive_checked_at": "10.11.2026"},
-    "heilbronn": {"name": "Porsche Zentrum Heilbronn", "url": "https://heilbronn.porsche.de/de/contact", "coordinates": (49.1213, 9.2231), "drive_minutes": 120, "drive_checked_at": "10.11.2026"},
-    "schwaebisch-gmuend": {"name": "Porsche Zentrum Schwäbisch Gmünd", "url": "https://schwaebisch-gmuend.porsche.de/de/contact", "coordinates": (48.7915, 9.7721), "drive_minutes": 120, "drive_checked_at": "10.11.2026"},
-    "darmstadt": {"name": "Porsche Zentrum Darmstadt", "url": "https://darmstadt.porsche.de/de/contact", "coordinates": (49.8630131, 8.6296094), "drive_minutes": 141, "drive_checked_at": "10.11.2026"},
-    "frankfurt": {"name": "Porsche Zentrum Frankfurt", "url": "https://frankfurt.porsche.de/de/contact", "coordinates": (50.1160256, 8.7273209), "drive_minutes": 124, "drive_checked_at": "10.11.2026"},
-    "augsburg": {"name": "Porsche Zentrum Augsburg", "url": "https://augsburg.porsche.de/de/contact", "coordinates": (48.4083, 10.8721), "drive_minutes": None},
-    "landshut": {"name": "Porsche Zentrum Landshut", "url": "https://landshut.porsche.de/de/contact", "coordinates": (48.567968, 12.155927), "drive_minutes": None},
-    "goeppingen": {"name": "Porsche Zentrum Göppingen", "url": "https://goeppingen.porsche.de/de/contact", "coordinates": (48.694249, 9.666462), "drive_minutes": None},
-    "niederbayern": {"name": "Porsche Zentrum Niederbayern/Plattling", "url": "https://niederbayern.porsche.de/de/contact", "coordinates": (48.787209, 12.849583), "drive_minutes": None},
-    "erfurt": {"name": "Porsche Zentrum Erfurt", "url": "https://erfurt.porsche.de/de/contact", "coordinates": (50.973949, 11.061862), "drive_minutes": None},
-    "fulda": {"name": "Porsche Zentrum Fulda", "url": "https://fulda.porsche.de/de/contact", "coordinates": (50.53427, 9.68252), "drive_minutes": None},
-    "olympiapark": {"name": "Porsche Zentrum Olympiapark", "url": "https://olympiapark.porsche.de/de/contact", "coordinates": (48.1874, 11.5360), "drive_minutes": None},
-    "muenchen": {"name": "Porsche Zentrum München", "url": "https://muenchen.porsche.de/de/contact", "coordinates": (48.1290, 11.5911), "drive_minutes": None},
-    "muenchen-sued": {"name": "Porsche Zentrum München Süd", "url": "https://muenchen-sued.porsche.de/de/contact", "coordinates": (48.093802, 11.503821), "drive_minutes": None},
-    "5seen": {"name": "Porsche Zentrum 5 Seen", "url": "https://5seen.porsche.de/de/contact", "coordinates": (48.1014, 11.3084), "drive_minutes": None},
-    "stuttgart": {"name": "Porsche Zentrum Stuttgart", "url": "https://stuttgart.porsche.de/de/contact", "coordinates": (48.810827, 9.181280), "drive_minutes": 138, "drive_checked_at": "10.11.2026"},
-    "boeblingen": {"name": "Porsche Zentrum Böblingen", "url": "https://boeblingen.porsche.de/de/contact", "coordinates": (48.690139, 9.005312), "drive_minutes": 149, "drive_checked_at": "10.11.2026"},
-    "pforzheim": {"name": "Porsche Zentrum Pforzheim", "url": "https://pforzheim.porsche.de/de/contact", "coordinates": (48.910721, 8.719793), "drive_minutes": None},
+    "aschaffenburg": {"name": "Porsche Zentrum Aschaffenburg", "url": "https://aschaffenburg.porsche.de/de/contact", "coordinates": (49.9651, 9.1728), "drive_minutes": 109, "drive_checked_at": "10.11.2026, 18:40–18:51 MEZ"},
+    "heilbronn": {"name": "Porsche Zentrum Heilbronn", "url": "https://heilbronn.porsche.de/de/contact", "coordinates": (49.1213, 9.2231), "drive_minutes": 120, "drive_checked_at": "10.11.2026, 18:40–18:51 MEZ"},
+    "schwaebisch-gmuend": {"name": "Porsche Zentrum Schwäbisch Gmünd", "url": "https://schwaebisch-gmuend.porsche.de/de/contact", "coordinates": (48.7915, 9.7721), "drive_minutes": 120, "drive_checked_at": "10.11.2026, 18:40–18:51 MEZ"},
+    "darmstadt": {"name": "Porsche Zentrum Darmstadt", "url": "https://darmstadt.porsche.de/de/contact", "coordinates": (49.8630131, 8.6296094), "drive_minutes": 141, "drive_checked_at": "10.11.2026, 18:40–18:51 MEZ"},
+    "frankfurt": {"name": "Porsche Zentrum Frankfurt", "url": "https://frankfurt.porsche.de/de/contact", "coordinates": (50.1160256, 8.7273209), "drive_minutes": 124, "drive_checked_at": "10.11.2026, 18:40–18:51 MEZ"},
+    "reutlingen": {"name": "Porsche Zentrum Reutlingen", "url": "https://reutlingen.porsche.de/de/contact", "coordinates": (48.4968209, 9.1533474), "drive_minutes": 172, "drive_checked_at": "10.11.2026, 18:40–18:51 MEZ"},
+    "mannheim": {"name": "Porsche Zentrum Mannheim", "url": "https://mannheim.porsche.de/de/contact", "coordinates": (49.4503362, 8.5664627), "drive_minutes": 151, "drive_checked_at": "10.11.2026, 18:40–18:51 MEZ"},
+    "ulm": {"name": "Porsche Zentrum Ulm-Neu-Ulm", "url": "https://ulm.porsche.de/de/contact", "coordinates": (48.3667333, 9.9576207), "drive_minutes": 133, "drive_checked_at": "10.11.2026, 18:40–18:51 MEZ"},
+    "stuttgart-filderstadt": {"name": "Porsche Zentrum Stuttgart Filderstadt", "url": "https://stuttgart-filderstadt.porsche.de/de/contact", "coordinates": (48.6822562, 9.210313), "drive_minutes": 154, "drive_checked_at": "10.11.2026, 18:40–18:51 MEZ"},
+    "rosenheim": {"name": "Porsche Zentrum Rosenheim", "url": "https://rosenheim.porsche.de/de/contact", "coordinates": (47.8162565, 12.1202333), "drive_minutes": 147, "drive_checked_at": "10.11.2026, 18:40–18:51 MEZ"},
+    "frankfurt-west-approved": {"name": "Porsche Approved & Service Zentrum Frankfurt West", "url": "https://frankfurt-west-approved.porsche.de/de/contact", "coordinates": (50.1273392, 8.5810083), "drive_minutes": 133, "drive_checked_at": "10.11.2026, 18:40–18:51 MEZ"},
+    "augsburg": {"name": "Porsche Zentrum Augsburg", "url": "https://augsburg.porsche.de/de/contact", "coordinates": (48.4083, 10.8721), "drive_minutes": 110, "drive_checked_at": "10.11.2026, 18:40–18:51 MEZ"},
+    "landshut": {"name": "Porsche Zentrum Landshut", "url": "https://landshut.porsche.de/de/contact", "coordinates": (48.567968, 12.155927), "drive_minutes": 102, "drive_checked_at": "10.11.2026, 18:40–18:51 MEZ"},
+    "goeppingen": {"name": "Porsche Zentrum Göppingen", "url": "https://goeppingen.porsche.de/de/contact", "coordinates": (48.694249, 9.666462), "drive_minutes": 144, "drive_checked_at": "10.11.2026, 18:40–18:51 MEZ"},
+    "niederbayern": {"name": "Porsche Zentrum Niederbayern/Plattling", "url": "https://niederbayern.porsche.de/de/contact", "coordinates": (48.787209, 12.849583), "drive_minutes": 114, "drive_checked_at": "10.11.2026, 18:40–18:51 MEZ"},
+    "erfurt": {"name": "Porsche Zentrum Erfurt", "url": "https://erfurt.porsche.de/de/contact", "coordinates": (50.973949, 11.061862), "drive_minutes": 141, "drive_checked_at": "10.11.2026, 18:40–18:51 MEZ"},
+    "fulda": {"name": "Porsche Zentrum Fulda", "url": "https://fulda.porsche.de/de/contact", "coordinates": (50.53427, 9.68252), "drive_minutes": 123, "drive_checked_at": "10.11.2026, 18:40–18:51 MEZ"},
+    "olympiapark": {"name": "Porsche Zentrum Olympiapark", "url": "https://olympiapark.porsche.de/de/contact", "coordinates": (48.1874, 11.5360), "drive_minutes": 108, "drive_checked_at": "10.11.2026, 18:40–18:51 MEZ"},
+    "muenchen": {"name": "Porsche Zentrum München", "url": "https://muenchen.porsche.de/de/contact", "coordinates": (48.1290, 11.5911), "drive_minutes": 115, "drive_checked_at": "10.11.2026, 18:40–18:51 MEZ"},
+    "muenchen-sued": {"name": "Porsche Zentrum München Süd", "url": "https://muenchen-sued.porsche.de/de/contact", "coordinates": (48.093802, 11.503821), "drive_minutes": 126, "drive_checked_at": "10.11.2026, 18:40–18:51 MEZ"},
+    "5seen": {"name": "Porsche Zentrum 5 Seen", "url": "https://5seen.porsche.de/de/contact", "coordinates": (48.1014, 11.3084), "drive_minutes": 116, "drive_checked_at": "10.11.2026, 18:40–18:51 MEZ"},
+    "stuttgart": {"name": "Porsche Zentrum Stuttgart", "url": "https://stuttgart.porsche.de/de/contact", "coordinates": (48.810827, 9.181280), "drive_minutes": 138, "drive_checked_at": "10.11.2026, 18:40–18:51 MEZ"},
+    "boeblingen": {"name": "Porsche Zentrum Böblingen", "url": "https://boeblingen.porsche.de/de/contact", "coordinates": (48.690139, 9.005312), "drive_minutes": 149, "drive_checked_at": "10.11.2026, 18:40–18:51 MEZ"},
+    "pforzheim": {"name": "Porsche Zentrum Pforzheim", "url": "https://pforzheim.porsche.de/de/contact", "coordinates": (48.910721, 8.719793), "drive_minutes": 158, "drive_checked_at": "10.11.2026, 18:40–18:51 MEZ"},
 }
 ALLOWED_DEALERS = set(DEALERS)
 DEALER_DRIVE_MINUTES = {key: value["drive_minutes"] for key, value in DEALERS.items()}
@@ -112,7 +118,7 @@ def validate_vehicle(car, year):
     source = official_url(car["url"])
     if source not in ("finder.porsche.com", dealer):
         raise ValueError("Inserat und Porsche-Zentrum passen nicht zusammen")
-    if not car["dealer"].startswith("Porsche Zentrum ") or not re.fullmatch(r"[A-Za-z0-9-]{1,40}", car["stock"]):
+    if not (car["dealer"].startswith("Porsche Zentrum ") or car["dealer"] == "Porsche Approved & Service Zentrum Frankfurt West") or not re.fullmatch(r"[A-Za-z0-9-]{1,40}", car["stock"]):
         raise ValueError("Porsche-Zentrum oder Bestandsnummer fehlt")
     if car["model"] not in ("S", "GTS") or car["availability"] not in AVAILABILITY:
         raise ValueError("Unbekanntes Modell oder Verfügbarkeit")
