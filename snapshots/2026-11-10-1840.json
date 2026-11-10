@@ -1,7 +1,7 @@
 {
   "researched_at": "2026-11-10T18:40:00+01:00",
-  "verified_at": "2026-11-10T18:46:00+01:00",
-  "scope": "Manuelle Teilstichprobe am 10.11.2026: Porsche Finder, Macan S/GTS, 200 km um Nürnberg, EZ ab 2022, maximal 50.000 km und ACC-Filter. Porsche zeigte 16 Inserate auf zwei Seiten; die hier erfassten Inserate wurden einzeln geöffnet. Nicht alle Porsche-Zentren und ACC-Schreibweisen sind vollständig geprüft; keine Vollerhebung.",
+  "verified_at": "2026-11-10T18:54:00+01:00",
+  "scope": "Manuelle Teilstichprobe am 10.11.2026 zwischen 18:40 und 18:54 MEZ: Porsche Finder, Macan S/GTS, 200 km um Nürnberg, EZ ab 2022, maximal 50.000 km. Übersicht mit und ohne ACC-Filter betrachtet; die hier erfassten Inserate wurden einzeln geöffnet. Die Zentrenliste und die Erhebung sind nicht als vollständig nachgewiesen.",
   "vehicles": [
     {
       "url": "https://finder.porsche.com/de/de-DE/details/porsche-macan-s-gebraucht-4GW7L5",
@@ -185,6 +185,33 @@
         "checked_at": "2026-11-10T18:46:00+01:00"
       },
       "availability_note": "Verfügbar ab 16.11.2026 laut Inserat"
+    },
+    {
+      "url": "https://finder.porsche.com/de/de-DE/details/porsche-macan-s-gebraucht-XGM4NX",
+      "dealer": "Porsche Zentrum Frankfurt",
+      "dealer_url": "https://frankfurt.porsche.de/de/contact",
+      "stock": "2018",
+      "model": "S",
+      "registration": "2023-11",
+      "price": 66990,
+      "km": 47625,
+      "color": "Kreide",
+      "color_group": "allowed",
+      "dealer_coordinates": [
+        50.1160256,
+        8.7273209
+      ],
+      "coordinate_accuracy_km": 1,
+      "accident_free": true,
+      "acc": true,
+      "warranty_months": 12,
+      "availability": "listed",
+      "availability_note": "Verfügbar ab 26.11.2026 laut Inserat",
+      "drive_time": {
+        "minutes": 124,
+        "source": "https://www.google.com/maps/dir/?api=1&origin=Brand%2C+90542+Eckental%2C+Deutschland&destination=Porsche+Zentrum+Frankfurt&travelmode=driving",
+        "checked_at": "2026-11-10T18:46:00+01:00"
+      }
     }
   ]
 }
