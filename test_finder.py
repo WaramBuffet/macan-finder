@@ -109,6 +109,16 @@ class FinderTests(unittest.TestCase):
             self.assertIn("Fahrzeit ab Eckental-Brand: ca. 1 Std. 05 Min.", page)
             self.assertIn("https://example.org/route", page)
 
+    def test_unknown_acc_is_not_displayed_but_remains_required(self):
+        car = {**self.car, "acc": None, "availability": "listed"}
+        self.assertEqual(assess(car)[0], "Prüfbedürftig")
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            build([self.snapshot(root, 9, [car])], root / "site", "test", NOW)
+            page = (root / "site/index.html").read_text()
+            self.assertNotIn("ACC laut Inserat vorhanden · Ungeklärt", page)
+            self.assertIn("Prüfbedürftige Inserate · 1", page)
+
     def test_only_selected_dealers_are_inside_radius_and_listed(self):
         self.assertEqual(set(DEALERS), {"amberg", "bamberg", "bayreuth", "nuernberg", "regensburg", "ingolstadt", "wuerzburg"})
         self.assertTrue(all(dealer_distance(value["coordinates"]) <= 100 for value in DEALERS.values()))

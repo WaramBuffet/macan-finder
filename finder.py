@@ -314,7 +314,8 @@ def card(car, observations, result, now, previous_sighting=False):
     ]
     details = "".join(f"<div><dt>{escape(label)}</dt><dd>{escape(str(value))}</dd></div>"
                       for label, value in values)
-    criteria = "".join(f"<li>{label} · {status(checks[field])}</li>" for field, label in CHECKS.items())
+    criteria = "".join(f"<li>{label} · {status(checks[field])}</li>" for field, label in CHECKS.items()
+                       if field != "acc" or checks[field] is not None)
     points_html = "".join(
         f"<li>{escape(label)} · {'Offen' if value is None else f'{value}/{WEIGHTS[label]}'}"
         f"{escape(' · ' + car[notes]) if notes and car.get(notes) else ''}</li>"
