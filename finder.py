@@ -419,6 +419,7 @@ def build(paths, output, build_id, now):
 <div><dt>Seite gebaut</dt><dd>{display_time(now.isoformat())}</dd></div>
 <div><dt>Veröffentlichung</dt><dd><a href="{REPO}/deployments">GitHub-Protokoll</a></dd></div></dl>
 <p>{scope}</p>
+<p><a href="{REPO}/blob/main/research/2026-11-10-1832.md">Rechercheprotokoll: Hinweise mit nicht bestätigter Aktualität ↗</a></p>
 <p><a href="{escape(SEARCH)}">Porsche Finder öffnen ↗</a> · <a href="feed.xml">RSS für relevante Änderungen</a></p></section>
 {dealer_overview()}
 {''.join(groups)}
