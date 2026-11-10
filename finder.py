@@ -33,8 +33,8 @@ DEALERS = {
                    "coordinates": (48.748902, 11.460769), "drive_minutes": 65},
     "wuerzburg": {"name": "Porsche Zentrum Würzburg", "url": "https://wuerzburg.porsche.de/de/contact",
                   "coordinates": (49.840217, 10.009811), "drive_minutes": 63},
-    "aschaffenburg": {"name": "Porsche Zentrum Aschaffenburg", "url": "https://aschaffenburg.porsche.de/de/contact", "coordinates": (49.9651, 9.1728), "drive_minutes": None},
-    "heilbronn": {"name": "Porsche Zentrum Heilbronn", "url": "https://heilbronn.porsche.de/de/contact", "coordinates": (49.1213, 9.2231), "drive_minutes": None},
+    "aschaffenburg": {"name": "Porsche Zentrum Aschaffenburg", "url": "https://aschaffenburg.porsche.de/de/contact", "coordinates": (49.9651, 9.1728), "drive_minutes": 109, "drive_checked_at": "10.11.2026"},
+    "heilbronn": {"name": "Porsche Zentrum Heilbronn", "url": "https://heilbronn.porsche.de/de/contact", "coordinates": (49.1213, 9.2231), "drive_minutes": 120, "drive_checked_at": "10.11.2026"},
     "schwaebisch-gmuend": {"name": "Porsche Zentrum Schwäbisch Gmünd", "url": "https://schwaebisch-gmuend.porsche.de/de/contact", "coordinates": (48.7915, 9.7721), "drive_minutes": None},
     "augsburg": {"name": "Porsche Zentrum Augsburg", "url": "https://augsburg.porsche.de/de/contact", "coordinates": (48.4083, 10.8721), "drive_minutes": None},
     "landshut": {"name": "Porsche Zentrum Landshut", "url": "https://landshut.porsche.de/de/contact", "coordinates": (48.567968, 12.155927), "drive_minutes": None},
@@ -46,8 +46,8 @@ DEALERS = {
     "muenchen": {"name": "Porsche Zentrum München", "url": "https://muenchen.porsche.de/de/contact", "coordinates": (48.1290, 11.5911), "drive_minutes": None},
     "muenchen-sued": {"name": "Porsche Zentrum München Süd", "url": "https://muenchen-sued.porsche.de/de/contact", "coordinates": (48.093802, 11.503821), "drive_minutes": None},
     "5seen": {"name": "Porsche Zentrum 5 Seen", "url": "https://5seen.porsche.de/de/contact", "coordinates": (48.1014, 11.3084), "drive_minutes": None},
-    "stuttgart": {"name": "Porsche Zentrum Stuttgart", "url": "https://stuttgart.porsche.de/de/contact", "coordinates": (48.810827, 9.181280), "drive_minutes": None},
-    "boeblingen": {"name": "Porsche Zentrum Böblingen", "url": "https://boeblingen.porsche.de/de/contact", "coordinates": (48.690139, 9.005312), "drive_minutes": None},
+    "stuttgart": {"name": "Porsche Zentrum Stuttgart", "url": "https://stuttgart.porsche.de/de/contact", "coordinates": (48.810827, 9.181280), "drive_minutes": 138, "drive_checked_at": "10.11.2026"},
+    "boeblingen": {"name": "Porsche Zentrum Böblingen", "url": "https://boeblingen.porsche.de/de/contact", "coordinates": (48.690139, 9.005312), "drive_minutes": 149, "drive_checked_at": "10.11.2026"},
     "pforzheim": {"name": "Porsche Zentrum Pforzheim", "url": "https://pforzheim.porsche.de/de/contact", "coordinates": (48.910721, 8.719793), "drive_minutes": None},
 }
 ALLOWED_DEALERS = set(DEALERS)
@@ -185,7 +185,7 @@ def dealer_overview():
         km = dealer_distance(dealer["coordinates"])
         minutes = dealer["drive_minutes"]
         duration = (f"ca. {minutes // 60} Std. {minutes % 60:02d} Min." if minutes >= 60 else f"ca. {minutes} Min.") if minutes is not None else "Nicht verlässlich ermittelt"
-        source_note = " · Abfrage 09.11.2026" if minutes is not None else " · Routenplaner"
+        source_note = f' · Abfrage {dealer.get("drive_checked_at", "09.11.2026")}' if minutes is not None else " · Routenplaner"
         rows.append(
             f'<tr><td><a href="{escape(dealer["url"], quote=True)}">{escape(dealer["name"])}</a></td>'
             f'<td>ca. {km:.1f} km</td><td>{duration}</td>'
@@ -193,7 +193,7 @@ def dealer_overview():
         )
     return ("<section><h2>Berücksichtigte Porsche Zentren</h2>"
             "<p>Die Luftlinie ist aus den dokumentierten Standortkoordinaten berechnet. Die Fahrzeiten sind dauerhaft "
-            "hinterlegte Richtwerte aus Google-Maps-Abfragen vom 09.11.2026, keine Live- oder statistischen Durchschnittswerte. Für neu ergänzte Zentren sind Fahrzeiten noch nicht verlässlich belegt; die Standortliste ist eine Teilrecherche.</p>"
+            "hinterlegte Richtwerte aus datierten Google-Maps-Abfragen, keine Live- oder statistischen Durchschnittswerte. Fehlende Werte sind noch nicht verlässlich belegt; die Standortliste ist eine Teilrecherche.</p>"
             "<table><thead><tr><th>Zentrum</th><th>Luftlinie ab Nürnberg</th><th>Fahrzeit ab Eckental-Brand</th>"
             "<th>Quelle</th></tr></thead><tbody>" + "".join(rows) + "</tbody></table></section>")
 
@@ -355,7 +355,7 @@ def card(car, observations, result, now, previous_sighting=False):
         minutes = drive["minutes"]
         duration = f"{minutes // 60} Std. {minutes % 60:02d} Min." if minutes >= 60 else f"{minutes} Min."
         drive_label = (f'ca. {duration} · <a href="{escape(drive["source"], quote=True)}">Quelle</a>'
-                       f' · {"Google Maps, Abfrage 09.11.2026" if fixed_drive else "Stand " + display_time(drive["checked_at"])}')
+                       f' · {"Google Maps, Abfrage " + DEALERS[dealer_id].get("drive_checked_at", "09.11.2026") if fixed_drive else "Stand " + display_time(drive["checked_at"])}')
     else:
         drive_label = '<a href="{}">Fahrzeit in Routenplanung ansehen ↗</a>'.format(escape(route, quote=True))
     return f"""
