@@ -5,7 +5,7 @@ import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
 from pathlib import Path
 
-from finder import DEALERS, assess, build, dealer_distance, load_history, score, tier, validate_vehicle
+from finder import DEALERS, assess, build, dealer_distance, load_history, mileage_tier, score, tier, validate_vehicle
 
 SEED = Path(__file__).parent / "snapshots" / "2026-11-08.json"
 CAR = json.loads(SEED.read_text())["vehicles"][0]
@@ -31,8 +31,11 @@ class FinderTests(unittest.TestCase):
         boundary = {**self.car, "price": 95000, "km": 50000}
         self.assertEqual(assess(boundary)[0], "Bestätigter Profiltreffer")
         self.assertEqual(tier(boundary), "C")
-        self.assertEqual(assess({**boundary, "km": 50001})[0], "Ausgeschlossen")
+        self.assertEqual(assess({**boundary, "km": 50001})[0], "Bestätigter Profiltreffer")
         self.assertEqual(assess({**boundary, "km": None})[0], "Prüfbedürftig")
+        for km, expected in ((50000, "A"), (50001, "B"), (60000, "B"), (60001, "C"), (70000, "C"), (70001, "Über 70.000 km"), (None, "Offen")):
+            self.assertEqual(mileage_tier({**boundary, "km": km}), expected)
+        self.assertEqual(assess({**boundary, "km": 70001})[0], "Bestätigter Profiltreffer")
         self.assertEqual(tier({**self.car, "price": 80000, "km": 50000}), "A")
         self.assertEqual(tier(self.car), "B")
 

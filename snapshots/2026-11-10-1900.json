@@ -1,0 +1,70 @@
+{
+  "researched_at": "2026-11-10T19:00:00+01:00",
+  "verified_at": "2026-11-10T19:02:00+01:00",
+  "scope": "Teilprüfung Porsche Zentrum Erfurt am 10.11.2026: drei unfallfreie Macan S/GTS einzeln geprüft. Ein vierter GTS wurde anhand der Übersicht wegen fehlender Unfallfreiheit ausgeschlossen. Keine vollständige Neurecherche des übrigen Suchgebiets.",
+  "vehicles": [
+    {
+      "url": "https://erfurt.porsche.de/de/inventory/porsche/porsche-macan-s-gebraucht-70D4DL",
+      "dealer": "Porsche Zentrum Erfurt",
+      "dealer_url": "https://erfurt.porsche.de/de/contact",
+      "stock": "CB",
+      "model": "S",
+      "registration": "2022-04",
+      "price": 62890,
+      "km": 67500,
+      "color": "Tiefschwarzmetallic",
+      "color_group": "allowed",
+      "dealer_coordinates": [
+        50.973949,
+        11.061862
+      ],
+      "coordinate_accuracy_km": 1,
+      "accident_free": true,
+      "acc": true,
+      "warranty_months": 12,
+      "availability": "listed"
+    },
+    {
+      "url": "https://erfurt.porsche.de/de/inventory/porsche/porsche-macan-gts-gebraucht-ZO6KGP",
+      "dealer": "Porsche Zentrum Erfurt",
+      "dealer_url": "https://erfurt.porsche.de/de/contact",
+      "stock": "SH",
+      "model": "GTS",
+      "registration": "2023-08",
+      "price": 77000,
+      "km": 53430,
+      "color": "Enzianblaumetallic",
+      "color_group": "allowed",
+      "dealer_coordinates": [
+        50.973949,
+        11.061862
+      ],
+      "coordinate_accuracy_km": 1,
+      "accident_free": true,
+      "acc": false,
+      "warranty_months": 12,
+      "availability": "listed"
+    },
+    {
+      "url": "https://erfurt.porsche.de/de/inventory/porsche/porsche-macan-gts-gebraucht-6ORD8D",
+      "dealer": "Porsche Zentrum Erfurt",
+      "dealer_url": "https://erfurt.porsche.de/de/contact",
+      "stock": "TE",
+      "model": "GTS",
+      "registration": "2022-08",
+      "price": 79000,
+      "km": 52560,
+      "color": "Enzianblaumetallic",
+      "color_group": "allowed",
+      "dealer_coordinates": [
+        50.973949,
+        11.061862
+      ],
+      "coordinate_accuracy_km": 1,
+      "accident_free": true,
+      "acc": true,
+      "warranty_months": 12,
+      "availability": "listed"
+    }
+  ]
+}

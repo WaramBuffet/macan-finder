@@ -72,7 +72,7 @@ AVAILABILITY = {
 CHECKS = {
     "registration": "Erstzulassung ab 2022", "color_group": "Außenfarbe weder Rot noch Weiß",
     "distance": "Im Umkreis von 200 km", "accident_free": "Unfallfrei",
-    "acc": "ACC laut Inserat vorhanden", "km": "Höchstens 50.000 km",
+    "acc": "ACC laut Inserat vorhanden", "km": "Laufleistung angegeben",
 }
 WEIGHTS = {
     "Preis / Marktvergleich": 35, "Zustand / Historie": 25,
@@ -210,9 +210,7 @@ def dealer_overview():
 
 def assess(car):
     checks = {field: car.get(field) for field in ("accident_free", "acc")}
-    for key, limit in (("km", 50000),):
-        value = car.get(key)
-        checks[key] = None if value is None else value <= limit
+    checks["km"] = None if car.get("km") is None else True
     registration = car.get("registration")
     checks["registration"] = None if registration is None else int(registration[:4]) >= 2022
     color = car.get("color_group")
@@ -237,12 +235,22 @@ def assess(car):
 
 
 def tier(car):
-    if car.get("price") is None or car.get("km") is None:
+    if car.get("price") is None:
         return "Offen"
     for name, price in (("A", 80000), ("B", 90000), ("C", 95000)):
         if car["price"] <= price:
             return name
     return "Außerhalb"
+
+
+def mileage_tier(car):
+    km = car.get("km")
+    if km is None:
+        return "Offen"
+    for name, limit in (("A", 50000), ("B", 60000), ("C", 70000)):
+        if km <= limit:
+            return name
+    return "Über 70.000 km"
 
 
 def score(car, peers, as_of):
@@ -260,7 +268,7 @@ def score(car, peers, as_of):
     market = None
     if len(candidates) >= 5:
         market = round(max(0, min(35, 17.5 + 100 * (1 - car["price"] / median(candidates)))))
-    mileage = max(0, round(22 * (1 - car["km"] / 50000)))
+    mileage = max(0, round(22 * (1 - car["km"] / 70000)))
     age = as_of.astimezone(BERLIN).year - int(car["registration"][:4])
     points = {
         "Preis / Marktvergleich": market,
@@ -370,7 +378,7 @@ def card(car, observations, result, now, previous_sighting=False):
         drive_label = '<a href="{}">Fahrzeit in Routenplanung ansehen ↗</a>'.format(escape(route, quote=True))
     return f"""
     <article id="{escape(car['key'])}">
-      <p class="eyebrow">{escape(state)} · Suchbereich {tier(car)} · {label}</p>
+      <p class="eyebrow">{escape(state)} · Preisbereich {tier(car)} · Kilometerbereich {mileage_tier(car)} · {label}</p>
       <h3>Porsche Macan {car['model']}</h3>
       <p><a href="{escape(car['dealer_url'])}">{escape(car['dealer'])}</a> · Fahrzeit ab Eckental-Brand: {drive_label} · <a href="{escape(route, quote=True)}">Route ansehen ↗</a> · Bestand {escape(car['stock'])}</p>
       <dl>{details}</dl>
@@ -434,8 +442,9 @@ def build(paths, output, build_id, now):
 {dealer_overview()}
 {''.join(groups)}
 <section><h2>Suchprofil und Bewertung</h2>
-<p>Erstzulassung ab 2022, höchstens 50.000 km, unfallfrei, keine roten oder weißen Fahrzeuge, ACC laut Inserat. Eine zusätzliche ACC-Funktionsprüfung ist nicht erforderlich.</p>
+<p>Erstzulassung ab 2022, unfallfrei, keine roten oder weißen Fahrzeuge, ACC laut Inserat. Eine zusätzliche ACC-Funktionsprüfung ist nicht erforderlich. Die Laufleistung muss bekannt sein.</p>
 <p>Preisbereiche: A bis 80.000 € · B bis 90.000 € · C bis 95.000 €. Höhere Preise bleiben möglich.</p>
+<p>Kilometerbereiche: A bis 50.000 km · B über 50.000 bis 60.000 km · C über 60.000 bis 70.000 km. Fahrzeuge über 70.000 km werden gesondert gekennzeichnet.</p>
 <p>100 Punkte · {scoring}. Bei fehlenden Nachweisen bleibt der jeweilige Teilwert und gegebenenfalls der Gesamtscore offen.</p>
 <p>Ein als nicht mehr auffindbar dokumentiertes Inserat bleibt in der Historie. Preisangaben sind Angebotspreise zum Sichtungszeitpunkt.</p></section>
 <footer><a href="{REPO}">Projekt auf GitHub</a></footer>
