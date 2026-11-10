@@ -19,6 +19,7 @@ SEARCH = "https://finder.porsche.com/de/de-DE/search/macan?condition=used&model=
 RADIUS_KM = 200
 NUREMBERG = (49.45435, 11.07346)
 DEALERS = {
+    "chemnitz": {"name": "Porsche Zentrum Chemnitz", "url": "https://chemnitz.porsche.de/de/contact", "coordinates": (50.8054821, 12.857103), "drive_minutes": 125, "drive_checked_at": "10.11.2026, 19:17 MEZ"},
     "amberg": {"name": "Porsche Zentrum Amberg", "url": "https://amberg.porsche.de/de/contact",
                "coordinates": (49.4355, 11.8888), "drive_minutes": 56},
     "bamberg": {"name": "Porsche Zentrum Bamberg", "url": "https://bamberg.porsche.de/de/contact",
