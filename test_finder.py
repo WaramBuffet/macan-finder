@@ -15,29 +15,18 @@ NOW = datetime(2026, 11, 14, tzinfo=timezone.utc)
 class FinderTests(unittest.TestCase):
     def setUp(self):
         self.car = {**CAR, "production_year": None, "acc_working": None,
-                    "dealer_coordinates": [49.4521, 11.0767], "coordinate_accuracy_km": 1, "dealer": "Porsche Zentrum Bamberg", "dealer_url": "https://bamberg.porsche.de/de/contact"}
+                    "dealer_coordinates": [49.4521, 11.0767], "coordinate_accuracy_km": 1, "dealer": "Porsche Zentrum Bamberg", "dealer_url": "https://bamberg.porsche.de/de/contact", "price": 70000, "owners": 1, "generation_iii": True, "rear_camera": True}
 
     def test_must_criteria_and_thresholds(self):
-        self.assertEqual(assess(CAR)[0], "Bestätigter Profiltreffer")
         self.assertEqual(assess(self.car)[0], "Bestätigter Profiltreffer")
-        self.assertEqual(assess({**self.car, "acc": False, "acc_working": None})[0], "Ausgeschlossen")
-        self.assertEqual(assess({**self.car, "accident_free": False})[0], "Ausgeschlossen")
-        self.assertEqual(assess({**self.car, "color_group": "excluded"})[0], "Ausgeschlossen")
-        self.assertEqual(assess({**self.car, "registration": "2021-12"})[0], "Ausgeschlossen")
-        self.assertEqual(assess({**self.car, "registration": None})[0], "Prüfbedürftig")
-        self.assertEqual(assess({**self.car, "acc": None, "acc_working": None})[0], "Prüfbedürftig")
-        self.assertEqual(assess({**self.car, "acc": True, "acc_working": None})[0], "Bestätigter Profiltreffer")
-        self.assertEqual(assess({**self.car, "acc": True, "acc_working": False})[0], "Bestätigter Profiltreffer")
-        boundary = {**self.car, "price": 95000, "km": 50000}
-        self.assertEqual(assess(boundary)[0], "Bestätigter Profiltreffer")
-        self.assertEqual(tier(boundary), "C")
-        self.assertEqual(assess({**boundary, "km": 50001})[0], "Bestätigter Profiltreffer")
-        self.assertEqual(assess({**boundary, "km": None})[0], "Prüfbedürftig")
-        for km, expected in ((50000, "A"), (50001, "B"), (60000, "B"), (60001, "C"), (70000, "C"), (70001, "Über 70.000 km"), (None, "Offen")):
-            self.assertEqual(mileage_tier({**boundary, "km": km}), expected)
-        self.assertEqual(assess({**boundary, "km": 70001})[0], "Bestätigter Profiltreffer")
-        self.assertEqual(tier({**self.car, "price": 80000, "km": 50000}), "A")
-        self.assertEqual(tier(self.car), "B")
+        for field, bad in (("acc", False), ("accident_free", False), ("generation_iii", False), ("rear_camera", False), ("price", 85001), ("km", 65001), ("owners", 3), ("color", "Pythongrün")):
+            self.assertEqual(assess({**self.car, field: bad})[0], "Ausgeschlossen", field)
+        for field in ("acc", "generation_iii", "rear_camera", "price", "km", "owners", "color"):
+            self.assertEqual(assess({**self.car, field: None})[0], "Prüfbedürftig", field)
+        self.assertEqual(assess({**self.car, "price": 85000, "km": 65000, "owners": 2})[0], "Bestätigter Profiltreffer")
+        self.assertEqual(tier({**self.car, "price": 65000}), "Wunschbereich")
+        self.assertEqual(mileage_tier({**self.car, "km": 50001}), "Grenzbereich")
+        self.assertEqual(assess({**self.car, "acc_working": False})[0], "Bestätigter Profiltreffer")
 
     def test_unknown_distance_and_porsche_domains(self):
         self.assertIsNone(assess({**self.car, "dealer_coordinates": None})[1]["distance"])
@@ -49,18 +38,14 @@ class FinderTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             validate_vehicle({**CAR, "acc": "false"}, 2026)
 
-    def test_scoring_requires_real_comparables(self):
-        car = {**self.car, "key": "a", "researched_at": NOW.isoformat(), "condition_points": 20,
-               "impression_points": 7}
-        peers = [{**car, "key": str(i)} for i in range(5)]
-        self.assertEqual(score({**CAR, "acc": None}, [], NOW), (None, {}))
-        self.assertIsNone(score(car, peers[:4], NOW)[0])
-        result, breakdown = score(car, peers, NOW)
-        self.assertEqual(breakdown["Preis / Marktvergleich"], 18)
-        self.assertNotIn("18-Wege-Sportsitze", breakdown)
-        self.assertNotIn("Sport Chrono", breakdown)
-        self.assertEqual(score({**car, "seats18": None, "chrono": None}, peers, NOW), (result, breakdown))
-        self.assertEqual(result, sum(breakdown.values()))
+    def test_scoring_wishes_keep_unknown_separate(self):
+        car = {**self.car, "km": 50000, "price": 65000, "surround_view": True, "privacy_glass": None, "badge_removed": False}
+        result, breakdown = score(car, [], NOW)
+        self.assertEqual(result, 4)
+        self.assertIsNone(breakdown["Privacyverglasung"])
+        self.assertFalse(breakdown["Modellbezeichnung entfallen"])
+        self.assertEqual(score({**car, "seats18": True, "chrono": True}, [], NOW), (result, breakdown))
+        self.assertEqual(score({**car, "rear_camera": None}, [], NOW), (None, {}))
 
     def snapshot(self, root, day, vehicles):
         stamp = f"2026-11-{day:02d}T08:00:00+01:00"
@@ -74,18 +59,18 @@ class FinderTests(unittest.TestCase):
             root = Path(directory)
             paths = [self.snapshot(root, 8, [{**self.car, "acc": None}]), self.snapshot(root, 9, [self.car]),
                      self.snapshot(root, 10, [self.car]), self.snapshot(root, 11, []),
-                     self.snapshot(root, 12, [{**self.car, "price": 83900}]),
-                     self.snapshot(root, 13, [{**self.car, "price": 83900, "availability": "not_found"}])]
+                     self.snapshot(root, 12, [{**self.car, "price": 75000}]),
+                     self.snapshot(root, 13, [{**self.car, "price": 75000, "availability": "not_found"}])]
             _, history, events = load_history(paths, NOW)
             self.assertEqual(len(history["bamberg-5321"]), 5)
             self.assertEqual([event[0] for event in events], ["new", "price"])
-            self.assertEqual(events[1][2], 85890)
+            self.assertEqual(events[1][2], 70000)
             build(paths, root / "site", "test", NOW)
             feed = ET.parse(root / "site/feed.xml")
             self.assertEqual(len(feed.findall("./channel/item")), 2)
             page = (root / "site/index.html").read_text()
             self.assertIn("Nicht mehr auffindbar", page)
-            self.assertIn("83.900 €", page)
+            self.assertIn("75.000 €", page)
             self.assertNotIn("18-Wege", page)
             self.assertNotIn("Sport Chrono", page)
 
@@ -96,7 +81,7 @@ class FinderTests(unittest.TestCase):
             page = (output / "index.html").read_text()
             self.assertIn("Bestätigte Profiltreffer · 0", page)
             self.assertIn("Porsche Zentrum Aschaffenburg", page)
-            self.assertEqual(len(ET.parse(output / "feed.xml").findall("./channel/item")), 1)
+            self.assertEqual(len(ET.parse(output / "feed.xml").findall("./channel/item")), 0)
             self.assertEqual((output / "build.txt").read_text().strip(), "test")
 
     def test_drive_time_is_sourced_and_rendered(self):

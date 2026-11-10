@@ -65,21 +65,20 @@ ALLOWED_DEALERS = set(DEALERS)
 DEALER_DRIVE_MINUTES = {key: value["drive_minutes"] for key, value in DEALERS.items()}
 DEALER_DRIVE_CHECKED_AT = "2026-11-09T22:00:00+01:00"
 BERLIN = ZoneInfo("Europe/Berlin")
-BOOLEAN_FIELDS = ("accident_free", "acc", "acc_working", "seats18", "chrono")
+BOOLEAN_FIELDS = ("accident_free", "acc", "acc_working", "seats18", "chrono", "generation_iii", "rear_camera", "surround_view", "privacy_glass", "badge_removed")
 AVAILABILITY = {
     "listed": "Inseriert", "reserved": "Reserviert", "sold": "Als verkauft bestätigt",
     "not_found": "Nicht mehr auffindbar", "unknown": "Ungeklärt",
 }
 CHECKS = {
-    "registration": "Erstzulassung ab 2022", "color_group": "Außenfarbe weder Rot noch Weiß",
-    "distance": "Im Umkreis von 200 km", "accident_free": "Unfallfrei",
-    "acc": "ACC laut Inserat vorhanden", "km": "Laufleistung angegeben",
+    "registration": "Erstzulassung ab 2022", "color_group": "Außenfarbe Schwarz, Grau, Silber, Blau oder Kreide",
+    "distance": "Im Umkreis von 200 km", "generation_iii": "Macan III ab Modellpflege 2021",
+    "accident_free": "Unfallfrei", "acc": "ACC laut Inserat vorhanden",
+    "km": "Höchstens 65.000 km", "price": "Höchstens 85.000 €",
+    "owners": "Höchstens zwei Vorbesitzer", "rear_camera": "Rückfahrkamera vorhanden",
 }
-WEIGHTS = {
-    "Preis / Marktvergleich": 35, "Zustand / Historie": 25,
-    "Laufleistung / Erstzulassung": 30,
-    "Farbe / Gesamteindruck": 10,
-}
+WEIGHTS = {}
+
 
 
 def moment(value):
@@ -135,7 +134,7 @@ def validate_vehicle(car, year):
     if car.get("acc_working") is True and car.get("acc") is not True:
         raise ValueError("Bestätigte ACC-Funktion setzt bestätigtes ACC voraus")
     for field, low, high in (("production_year", 2014, year), ("price", 1, 9999999),
-                             ("km", 0, 999999), ("warranty_months", 0, 120),
+                             ("km", 0, 999999), ("owners", 0, 99), ("warranty_months", 0, 120),
                              ("condition_points", 0, 25), ("impression_points", 0, 10)):
         bounded(car.get(field), low, high, field)
     for field in ("condition", "impression"):
@@ -210,12 +209,20 @@ def dealer_overview():
 
 
 def assess(car):
-    checks = {field: car.get(field) for field in ("accident_free", "acc")}
-    checks["km"] = None if car.get("km") is None else True
+    checks = {field: car.get(field) for field in ("accident_free", "acc", "generation_iii", "rear_camera")}
+    for field, maximum in (("km", 65000), ("price", 85000), ("owners", 2)):
+        checks[field] = None if car.get(field) is None else car[field] <= maximum
     registration = car.get("registration")
     checks["registration"] = None if registration is None else int(registration[:4]) >= 2022
-    color = car.get("color_group")
-    checks["color_group"] = None if color is None else color == "allowed"
+    color = (car.get("color") or "").lower()
+    if not color:
+        checks["color_group"] = None
+    elif car.get("color_group") == "excluded" or any(x in color for x in ("weiß", "weiss", "rot", "grün", "gruen")):
+        checks["color_group"] = False
+    elif any(x in color for x in ("schwarz", "grau", "silber", "blau", "kreide")):
+        checks["color_group"] = True
+    else:
+        checks["color_group"] = None
     km = distance(car)
     checks["distance"] = None
     if km is not None:
@@ -236,48 +243,27 @@ def assess(car):
 
 
 def tier(car):
-    if car.get("price") is None:
-        return "Offen"
-    for name, price in (("A", 80000), ("B", 90000), ("C", 95000)):
-        if car["price"] <= price:
-            return name
-    return "Außerhalb"
+    price = car.get("price")
+    return "Offen" if price is None else "Wunschbereich" if price <= 65000 else "Grenzbereich" if price <= 85000 else "Ausgeschlossen"
 
 
 def mileage_tier(car):
     km = car.get("km")
-    if km is None:
-        return "Offen"
-    for name, limit in (("A", 50000), ("B", 60000), ("C", 70000)):
-        if km <= limit:
-            return name
-    return "Über 70.000 km"
+    return "Offen" if km is None else "Wunschbereich" if km <= 50000 else "Grenzbereich" if km <= 65000 else "Ausgeschlossen"
 
 
 def score(car, peers, as_of):
     if assess(car)[0] != "Bestätigter Profiltreffer":
         return None, {}
-    candidates = [
-        peer["price"] for peer in peers
-        if peer["key"] != car["key"] and peer["availability"] == "listed"
-        and as_of - moment(peer["researched_at"]) <= timedelta(days=7)
-        and peer["model"] == car["model"] and peer.get("registration")
-        and peer["registration"][:4] == car["registration"][:4]
-        and peer.get("price") is not None and peer.get("km") is not None
-        and abs(peer["km"] - car["km"]) <= 10000
-    ]
-    market = None
-    if len(candidates) >= 5:
-        market = round(max(0, min(35, 17.5 + 100 * (1 - car["price"] / median(candidates)))))
-    mileage = max(0, round(22 * (1 - car["km"] / 70000)))
-    age = as_of.astimezone(BERLIN).year - int(car["registration"][:4])
     points = {
-        "Preis / Marktvergleich": market,
-        "Zustand / Historie": car.get("condition_points"),
-        "Laufleistung / Erstzulassung": mileage + max(0, 8 - 2 * age),
-        "Farbe / Gesamteindruck": car.get("impression_points"),
+        "Bis 50.000 km": None if car.get("km") is None else car["km"] <= 50000,
+        "Bis 65.000 €": None if car.get("price") is None else car["price"] <= 65000,
+        "Ein Vorbesitzer": None if car.get("owners") is None else car["owners"] <= 1,
+        "Surround View": car.get("surround_view"),
+        "Privacyverglasung": car.get("privacy_glass"),
+        "Modellbezeichnung entfallen": car.get("badge_removed"),
     }
-    return (None if None in points.values() else sum(points.values())), points
+    return sum(value is True for value in points.values()), points
 
 
 def load_history(paths, now):
@@ -352,19 +338,13 @@ def card(car, observations, result, now, previous_sighting=False):
                       for label, value in values)
     criteria = "".join(f"<li>{label} · {status(checks[field])}</li>" for field, label in CHECKS.items()
                        if field != "acc" or checks[field] is not None)
-    points_html = "".join(
-        f"<li>{escape(label)} · {'Offen' if value is None else f'{value}/{WEIGHTS[label]}'}"
-        f"{escape(' · ' + car[notes]) if notes and car.get(notes) else ''}</li>"
-        for label, value in points.items()
-        for notes in [{"Zustand / Historie": "condition_note",
-                       "Farbe / Gesamteindruck": "impression_note"}.get(label)]
-    )
+    points_html = "".join(f"<li>{escape(label)} · {status(value)}</li>" for label, value in points.items())
     prices = "".join(
         f"<li>{display_time(entry['researched_at'])} · {number(entry.get('price'), ' €')} · "
         f"{AVAILABILITY[entry['availability']]}</li>" for entry in reversed(observations)
     )
     freshness = " · älter als 48 Stunden" if now - moment(car["researched_at"]) > timedelta(hours=48) else ""
-    label = "Score offen" if total is None else f"{total}/100 Punkte"
+    label = "Bewertung offen" if total is None else f"{total} von 6 Wünschen erfüllt · {sum(v is None for v in points.values())} offen"
     route = route_url(car["dealer"])
     dealer_id = (urlsplit(car["dealer_url"]).hostname or "").split(".")[0]
     minutes = DEALER_DRIVE_MINUTES.get(dealer_id)
@@ -422,7 +402,6 @@ def build(paths, output, build_id, now):
     research = display_time(last["researched_at"]) if last else "Kein Datenstand"
     verified = display_time(last["verified_at"]) if last else "Kein Datenstand"
     scope = escape(last["scope"]) if last else "Keine Stichprobe vorhanden"
-    scoring = " · ".join(f"{escape(name)} {weight}" for name, weight in WEIGHTS.items())
     page = f"""<!doctype html>
 <html lang="de"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Macan Finder · Nürnberg</title>
@@ -443,10 +422,8 @@ def build(paths, output, build_id, now):
 {dealer_overview()}
 {''.join(groups)}
 <section><h2>Suchprofil und Bewertung</h2>
-<p>Erstzulassung ab 2022, unfallfrei, keine roten oder weißen Fahrzeuge, ACC laut Inserat. Eine zusätzliche ACC-Funktionsprüfung ist nicht erforderlich. Die Laufleistung muss bekannt sein.</p>
-<p>Preisbereiche: A bis 80.000 € · B bis 90.000 € · C bis 95.000 €. Höhere Preise bleiben möglich.</p>
-<p>Kilometerbereiche: A bis 50.000 km · B über 50.000 bis 60.000 km · C über 60.000 bis 70.000 km. Fahrzeuge über 70.000 km werden gesondert gekennzeichnet.</p>
-<p>100 Punkte · {scoring}. Bei fehlenden Nachweisen bleibt der jeweilige Teilwert und gegebenenfalls der Gesamtscore offen.</p>
+<p>Muss: Macan III (Modellpflege ab 2021), Erstzulassung ab 2022, unfallfrei, Schwarz, Grau, Silber, Blau oder Kreide, ACC laut Inserat, Rückfahrkamera, höchstens zwei Vorbesitzer, 65.000 km und 85.000 €. Eine zusätzliche ACC-Funktionsprüfung ist nicht erforderlich.</p>
+<p>Wünsche: bis 50.000 km, bis 65.000 €, ein Vorbesitzer, Surround View, Privacyverglasung und entfallene Modellbezeichnung. Alle sechs Wünsche zählen gleich; unbekannte Angaben werden als offen ausgewiesen.</p>
 <p>Ein als nicht mehr auffindbar dokumentiertes Inserat bleibt in der Historie. Preisangaben sind Angebotspreise zum Sichtungszeitpunkt.</p></section>
 <footer><a href="{REPO}">Projekt auf GitHub</a></footer>
 </main></html>
@@ -464,5 +441,3 @@ if __name__ == "__main__":
     parser.add_argument("--build-id", default="local")
     args = parser.parse_args()
     build(sorted((ROOT / "snapshots").glob("*.json")), args.output, args.build_id, datetime.now(timezone.utc))
-
-

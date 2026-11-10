@@ -21,15 +21,13 @@ Koordinatenquellen für neue Zentren (überwiegend Ladestationen an der jeweilig
 
 Die Werte der ersten Stichprobe stammen aus dem [Finder-Inserat](https://finder.porsche.com/de/de-DE/details/porsche-macan-s-gebraucht-4GW7L5). Die [Händleranschrift](https://aschaffenburg.porsche.de/de/contact) liegt in Aschaffenburg. Die Entfernung wird mit Stadtkoordinaten und einer Unsicherheit von 10 km angenähert.
 
-## 100 Punkte
+## Muss- und Wunschkriterien
 
-- **Preis / Marktvergleich (35)**. Mindestens fünf andere innerhalb der letzten sieben Tage erfasste Inserate mit gleicher Variante, gleichem Erstzulassungsjahr und bis zu 10.000 km Laufleistungsdifferenz. Der Median der Angebotspreise ergibt 17,5 Punkte vor Rundung. Je Prozent Preisabweichung kommt ein Punkt hinzu oder fällt weg, begrenzt auf 0 bis 35. Sitze und Sport Chrono werden nicht als Vergleichsmerkmale verwendet.
-- **Zustand / Historie (25)**. Manuelle Bewertung mit Begründung anhand belegter Wartung, technischer Prüfung, Reifen, Bremsen und Garantie.
-- **Laufleistung / Erstzulassung (30)**. Die Laufleistung ist flexibel: A bis 50.000 km, B über 50.000 bis 60.000 km, C über 60.000 bis 70.000 km, darüber gesondert gekennzeichnet. Fehlende Angaben bleiben ungeklärt. Bis zu 22 Punkte linear zwischen 0 und 70.000 km und bis zu 8 Punkte für das Erstzulassungsjahr, abzüglich 2 je Kalenderjahr.
-- Sitze und Sport Chrono sind keine Such- oder Bewertungskriterien und werden in der Übersicht nicht angezeigt. Historische Rohdaten bleiben unverändert erhalten.
-- **Farbe / Gesamteindruck (10)**. Manuelle Bewertung mit Begründung. Die obigen Rechenregeln sind Arbeitsannahmen und anhand echter Vergleichsfälle zu kalibrieren.
+Muss: Macan S oder GTS der Modellpflege ab 2021, Erstzulassung ab 2022, unfallfrei, ACC laut vollständigem Inserat, Rückfahrkamera, höchstens zwei Vorbesitzer, höchstens 65.000 km und 85.000 €, Außenfarbe Schwarz, Grau, Silber, Blau oder Kreide. Für die Modellpflege ist die Motorleistung ein belegbares Indiz: [Porsche Newsroom vom 20.07.2021](https://newsroom.porsche.com/de/2021/produkte/porsche-neue-macan-modelle-25179.html) nennt für den S 280 kW und den GTS 324 kW. `generation_iii`, `rear_camera` und `owners` sind einzeln zu belegen. Alte Datensätze ohne diese Angaben bleiben ungeklärt.
 
-Ein Gesamtscore wird erst bei erfüllten Muss-Kriterien und vollständigen Teilwerten berechnet. Der RSS-Feed setzt erfüllte Muss-Kriterien voraus. Er erzeugt auch bei erneutem Seitenbau keine doppelten Ereignisse.
+Wünsche: bis 50.000 km, bis 65.000 €, ein Vorbesitzer, Surround View, Privacyverglasung und Entfall der Modellbezeichnung. Jeder erfüllte Wunsch zählt gleich; unbekannte Angaben bleiben offen. Die Einstufung erfolgt erst nach Bestätigung aller Muss-Kriterien. Sitze und Sport Chrono werden nicht bewertet oder angezeigt.
+
+Der RSS-Feed setzt erfüllte Muss-Kriterien voraus. Er erzeugt auch bei erneutem Seitenbau keine doppelten Ereignisse.
 
 ## Veröffentlichung und Rechte
 
