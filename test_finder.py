@@ -26,6 +26,8 @@ class FinderTests(unittest.TestCase):
         self.assertEqual(assess({**self.car, "registration": "2021-12"})[0], "Ausgeschlossen")
         self.assertEqual(assess({**self.car, "registration": None})[0], "Prüfbedürftig")
         self.assertEqual(assess({**self.car, "acc": None, "acc_working": None})[0], "Prüfbedürftig")
+        self.assertEqual(assess({**self.car, "acc": True, "acc_working": None})[0], "Bestätigter Profiltreffer")
+        self.assertEqual(assess({**self.car, "acc": True, "acc_working": False})[0], "Bestätigter Profiltreffer")
         boundary = {**self.car, "price": 95000, "km": 50000}
         self.assertEqual(assess(boundary)[0], "Bestätigter Profiltreffer")
         self.assertEqual(tier(boundary), "C")
@@ -51,9 +53,10 @@ class FinderTests(unittest.TestCase):
         self.assertEqual(score({**CAR, "acc": None}, [], NOW), (None, {}))
         self.assertIsNone(score(car, peers[:4], NOW)[0])
         result, breakdown = score(car, peers, NOW)
-        self.assertEqual(breakdown["Preis / Marktvergleich"], 15)
+        self.assertEqual(breakdown["Preis / Marktvergleich"], 18)
         self.assertNotIn("18-Wege-Sportsitze", breakdown)
-        self.assertEqual(score({**car, "seats18": None}, peers, NOW), (result, breakdown))
+        self.assertNotIn("Sport Chrono", breakdown)
+        self.assertEqual(score({**car, "seats18": None, "chrono": None}, peers, NOW), (result, breakdown))
         self.assertEqual(result, sum(breakdown.values()))
 
     def snapshot(self, root, day, vehicles):
@@ -80,6 +83,8 @@ class FinderTests(unittest.TestCase):
             page = (root / "site/index.html").read_text()
             self.assertIn("Nicht mehr auffindbar", page)
             self.assertIn("83.900 €", page)
+            self.assertNotIn("18-Wege", page)
+            self.assertNotIn("Sport Chrono", page)
 
     def test_seed_build_has_no_alert_and_keeps_unknown_fields(self):
         with tempfile.TemporaryDirectory() as directory:

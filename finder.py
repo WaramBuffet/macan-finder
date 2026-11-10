@@ -49,9 +49,9 @@ CHECKS = {
     "acc": "ACC laut Inserat vorhanden", "km": "Höchstens 50.000 km",
 }
 WEIGHTS = {
-    "Preis / Marktvergleich": 30, "Zustand / Historie": 25,
+    "Preis / Marktvergleich": 35, "Zustand / Historie": 25,
     "Laufleistung / Erstzulassung": 30,
-    "Sport Chrono": 5, "Farbe / Gesamteindruck": 10,
+    "Farbe / Gesamteindruck": 10,
 }
 
 
@@ -229,18 +229,16 @@ def score(car, peers, as_of):
         and peer["registration"][:4] == car["registration"][:4]
         and peer.get("price") is not None and peer.get("km") is not None
         and abs(peer["km"] - car["km"]) <= 10000
-        and car.get("chrono") is not None and peer.get("chrono") == car["chrono"]
     ]
     market = None
     if len(candidates) >= 5:
-        market = round(max(0, min(30, 15 + 100 * (1 - car["price"] / median(candidates)))))
+        market = round(max(0, min(35, 17.5 + 100 * (1 - car["price"] / median(candidates)))))
     mileage = max(0, round(22 * (1 - car["km"] / 50000)))
     age = as_of.astimezone(BERLIN).year - int(car["registration"][:4])
     points = {
         "Preis / Marktvergleich": market,
         "Zustand / Historie": car.get("condition_points"),
         "Laufleistung / Erstzulassung": mileage + max(0, 8 - 2 * age),
-        "Sport Chrono": None if car.get("chrono") is None else 5 * car["chrono"],
         "Farbe / Gesamteindruck": car.get("impression_points"),
     }
     return (None if None in points.values() else sum(points.values())), points
@@ -313,7 +311,6 @@ def card(car, observations, result, now, previous_sighting=False):
         ("Luftlinie", "Ungeklärt" if km is None else
          f"ca. {round(km)} km (±{car['coordinate_accuracy_km']} km)"),
         ("Garantie", number(car.get("warranty_months"), " Monate")),
-        ("18-Wege-Sportsitze", status(car.get("seats18"))), ("Sport Chrono", status(car.get("chrono"))),
     ]
     details = "".join(f"<div><dt>{escape(label)}</dt><dd>{escape(str(value))}</dd></div>"
                       for label, value in values)
@@ -408,7 +405,7 @@ def build(paths, output, build_id, now):
 {dealer_overview()}
 {''.join(groups)}
 <section><h2>Suchprofil und Bewertung</h2>
-<p>Erstzulassung ab 2022, höchstens 50.000 km, unfallfrei, keine roten oder weißen Fahrzeuge, ACC laut Inserat. Sport Chrono ist erwünscht. 18-Wege-Sitze werden nicht bewertet.</p>
+<p>Erstzulassung ab 2022, höchstens 50.000 km, unfallfrei, keine roten oder weißen Fahrzeuge, ACC laut Inserat. Eine zusätzliche ACC-Funktionsprüfung ist nicht erforderlich.</p>
 <p>Preisbereiche: A bis 80.000 € · B bis 90.000 € · C bis 95.000 €. Höhere Preise bleiben möglich.</p>
 <p>100 Punkte · {scoring}. Bei fehlenden Nachweisen bleibt der jeweilige Teilwert und gegebenenfalls der Gesamtscore offen.</p>
 <p>Ein als nicht mehr auffindbar dokumentiertes Inserat bleibt in der Historie. Preisangaben sind Angebotspreise zum Sichtungszeitpunkt.</p></section>
