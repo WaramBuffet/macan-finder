@@ -15,8 +15,8 @@ from zoneinfo import ZoneInfo
 ROOT = Path(__file__).resolve().parent
 SITE = "https://warambuffet.github.io/macan-finder/"
 REPO = "https://github.com/WaramBuffet/macan-finder"
-SEARCH = "https://finder.porsche.com/de/de-DE/search/macan?condition=used&model=macan&category=macan-s&category=macan-gts&position=N%C3%BCrnberg%2C49.45435%2C11.07346%2C100&equipment=acc-incl-pas"
-RADIUS_KM = 100
+SEARCH = "https://finder.porsche.com/de/de-DE/search/macan?condition=used&model=macan&category=macan-s&category=macan-gts&position=N%C3%BCrnberg%2C49.45435%2C11.07346%2C200&equipment=acc-incl-pas"
+RADIUS_KM = 200
 NUREMBERG = (49.45435, 11.07346)
 DEALERS = {
     "amberg": {"name": "Porsche Zentrum Amberg", "url": "https://amberg.porsche.de/de/contact",
@@ -33,6 +33,22 @@ DEALERS = {
                    "coordinates": (48.748902, 11.460769), "drive_minutes": 65},
     "wuerzburg": {"name": "Porsche Zentrum Würzburg", "url": "https://wuerzburg.porsche.de/de/contact",
                   "coordinates": (49.840217, 10.009811), "drive_minutes": 63},
+    "aschaffenburg": {"name": "Porsche Zentrum Aschaffenburg", "url": "https://aschaffenburg.porsche.de/de/contact", "coordinates": (49.9651, 9.1728), "drive_minutes": None},
+    "heilbronn": {"name": "Porsche Zentrum Heilbronn", "url": "https://heilbronn.porsche.de/de/contact", "coordinates": (49.1213, 9.2231), "drive_minutes": None},
+    "schwaebisch-gmuend": {"name": "Porsche Zentrum Schwäbisch Gmünd", "url": "https://schwaebisch-gmuend.porsche.de/de/contact", "coordinates": (48.7915, 9.7721), "drive_minutes": None},
+    "augsburg": {"name": "Porsche Zentrum Augsburg", "url": "https://augsburg.porsche.de/de/contact", "coordinates": (48.4083, 10.8721), "drive_minutes": None},
+    "landshut": {"name": "Porsche Zentrum Landshut", "url": "https://landshut.porsche.de/de/contact", "coordinates": (48.567968, 12.155927), "drive_minutes": None},
+    "goeppingen": {"name": "Porsche Zentrum Göppingen", "url": "https://goeppingen.porsche.de/de/contact", "coordinates": (48.694249, 9.666462), "drive_minutes": None},
+    "niederbayern": {"name": "Porsche Zentrum Niederbayern/Plattling", "url": "https://niederbayern.porsche.de/de/contact", "coordinates": (48.787209, 12.849583), "drive_minutes": None},
+    "erfurt": {"name": "Porsche Zentrum Erfurt", "url": "https://erfurt.porsche.de/de/contact", "coordinates": (50.973949, 11.061862), "drive_minutes": None},
+    "fulda": {"name": "Porsche Zentrum Fulda", "url": "https://fulda.porsche.de/de/contact", "coordinates": (50.53427, 9.68252), "drive_minutes": None},
+    "olympiapark": {"name": "Porsche Zentrum Olympiapark", "url": "https://olympiapark.porsche.de/de/contact", "coordinates": (48.1874, 11.5360), "drive_minutes": None},
+    "muenchen": {"name": "Porsche Zentrum München", "url": "https://muenchen.porsche.de/de/contact", "coordinates": (48.1290, 11.5911), "drive_minutes": None},
+    "muenchen-sued": {"name": "Porsche Zentrum München Süd", "url": "https://muenchen-sued.porsche.de/de/contact", "coordinates": (48.093802, 11.503821), "drive_minutes": None},
+    "5seen": {"name": "Porsche Zentrum 5 Seen", "url": "https://5seen.porsche.de/de/contact", "coordinates": (48.1014, 11.3084), "drive_minutes": None},
+    "stuttgart": {"name": "Porsche Zentrum Stuttgart", "url": "https://stuttgart.porsche.de/de/contact", "coordinates": (48.810827, 9.181280), "drive_minutes": None},
+    "boeblingen": {"name": "Porsche Zentrum Böblingen", "url": "https://boeblingen.porsche.de/de/contact", "coordinates": (48.690139, 9.005312), "drive_minutes": None},
+    "pforzheim": {"name": "Porsche Zentrum Pforzheim", "url": "https://pforzheim.porsche.de/de/contact", "coordinates": (48.910721, 8.719793), "drive_minutes": None},
 }
 ALLOWED_DEALERS = set(DEALERS)
 DEALER_DRIVE_MINUTES = {key: value["drive_minutes"] for key, value in DEALERS.items()}
@@ -45,7 +61,7 @@ AVAILABILITY = {
 }
 CHECKS = {
     "registration": "Erstzulassung ab 2022", "color_group": "Außenfarbe weder Rot noch Weiß",
-    "distance": "Im Umkreis von 100 km", "accident_free": "Unfallfrei",
+    "distance": "Im Umkreis von 200 km", "accident_free": "Unfallfrei",
     "acc": "ACC laut Inserat vorhanden", "km": "Höchstens 50.000 km",
 }
 WEIGHTS = {
@@ -168,15 +184,16 @@ def dealer_overview():
     for dealer in DEALERS.values():
         km = dealer_distance(dealer["coordinates"])
         minutes = dealer["drive_minutes"]
-        duration = f"{minutes // 60} Std. {minutes % 60:02d} Min." if minutes >= 60 else f"{minutes} Min."
+        duration = (f"ca. {minutes // 60} Std. {minutes % 60:02d} Min." if minutes >= 60 else f"ca. {minutes} Min.") if minutes is not None else "Nicht verlässlich ermittelt"
+        source_note = " · Abfrage 09.11.2026" if minutes is not None else " · Routenplaner"
         rows.append(
             f'<tr><td><a href="{escape(dealer["url"], quote=True)}">{escape(dealer["name"])}</a></td>'
-            f'<td>ca. {km:.1f} km</td><td>ca. {duration}</td>'
-            f'<td><a href="{escape(route_url(dealer["name"]), quote=True)}">Google Maps</a> · Abfrage 09.11.2026</td></tr>'
+            f'<td>ca. {km:.1f} km</td><td>{duration}</td>'
+            f'<td><a href="{escape(route_url(dealer["name"]), quote=True)}">Google Maps</a>{source_note}</td></tr>'
         )
     return ("<section><h2>Berücksichtigte Porsche Zentren</h2>"
             "<p>Die Luftlinie ist aus den dokumentierten Standortkoordinaten berechnet. Die Fahrzeiten sind dauerhaft "
-            "hinterlegte Richtwerte aus Google-Maps-Abfragen vom 09.11.2026, keine Live- oder statistischen Durchschnittswerte.</p>"
+            "hinterlegte Richtwerte aus Google-Maps-Abfragen vom 09.11.2026, keine Live- oder statistischen Durchschnittswerte. Für neu ergänzte Zentren sind Fahrzeiten noch nicht verlässlich belegt; die Standortliste ist eine Teilrecherche.</p>"
             "<table><thead><tr><th>Zentrum</th><th>Luftlinie ab Nürnberg</th><th>Fahrzeit ab Eckental-Brand</th>"
             "<th>Quelle</th></tr></thead><tbody>" + "".join(rows) + "</tbody></table></section>")
 
@@ -370,7 +387,7 @@ def build(paths, output, build_id, now):
             continue
         state, _ = assess(car)
         result = score(car, latest, now)
-        previous_sighting = car["researched_at"] != latest_research and car["availability"] == "listed"
+        previous_sighting = (car["researched_at"] != latest_research or now - moment(car["researched_at"]) > timedelta(hours=48)) and car["availability"] == "listed"
         group = pending if previous_sighting and state == "Bestätigter Profiltreffer" else {"Bestätigter Profiltreffer": confirmed, "Prüfbedürftig": pending}.get(state, archived)
         group.append((car, result))
     groups = []
@@ -379,7 +396,7 @@ def build(paths, output, build_id, now):
         entries.sort(key=lambda row: (-(row[1][0] if row[1][0] is not None else -1),
                                       row[0].get("price") or math.inf))
         cards = "".join(card(car, history[car["key"]], result, now,
-                             car["researched_at"] != latest_research and car["availability"] == "listed")
+                             (car["researched_at"] != latest_research or now - moment(car["researched_at"]) > timedelta(hours=48)) and car["availability"] == "listed")
                         for car, result in entries)
         groups.append(f"<section><h2>{name} · {len(entries)}</h2>{cards or '<p>Keine Einträge im erfassten Bestand.</p>'}</section>")
     last = snapshots[-1] if snapshots else None
@@ -394,7 +411,7 @@ def build(paths, output, build_id, now):
 <link rel="stylesheet" href="style.css">
 <main>
 <header><p class="eyebrow">Gebrauchtwagen · Offizielle Porsche-Zentren</p><h1>Macan Finder</h1>
-<p>Porsche Macan S und GTS · 100 km Luftlinie um Nürnberg</p></header>
+<p>Porsche Macan S und GTS · 200 km Luftlinie um Nürnberg</p></header>
 <section class="notice" aria-label="Datenstand">
 <strong>Manuell geprüfter Datenstand</strong>
 <p>Der tägliche Seitenlauf verarbeitet die hinterlegten Stichproben. Ein automatischer Porsche-Abruf ist nicht eingerichtet. Die erfassten Inserate sind eine Stichprobe.</p>

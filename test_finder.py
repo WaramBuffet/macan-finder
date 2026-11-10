@@ -18,7 +18,7 @@ class FinderTests(unittest.TestCase):
                     "dealer_coordinates": [49.4521, 11.0767], "coordinate_accuracy_km": 1, "dealer": "Porsche Zentrum Bamberg", "dealer_url": "https://bamberg.porsche.de/de/contact"}
 
     def test_must_criteria_and_thresholds(self):
-        self.assertEqual(assess(CAR)[0], "Ausgeschlossen")
+        self.assertEqual(assess(CAR)[0], "Bestätigter Profiltreffer")
         self.assertEqual(assess(self.car)[0], "Bestätigter Profiltreffer")
         self.assertEqual(assess({**self.car, "acc": False, "acc_working": None})[0], "Ausgeschlossen")
         self.assertEqual(assess({**self.car, "accident_free": False})[0], "Ausgeschlossen")
@@ -39,7 +39,7 @@ class FinderTests(unittest.TestCase):
     def test_unknown_distance_and_porsche_domains(self):
         self.assertIsNone(assess({**self.car, "dealer_coordinates": None})[1]["distance"])
         self.assertFalse(assess({**self.car, "dealer_coordinates": [53.55, 10.0]})[1]["distance"])
-        self.assertIsNone(assess({**self.car, "dealer_coordinates": [50.35, 11.0767], "coordinate_accuracy_km": 10})[1]["distance"])
+        self.assertIsNone(assess({**self.car, "dealer_coordinates": [51.25, 11.0767], "coordinate_accuracy_km": 10})[1]["distance"])
         self.assertTrue(assess({**self.car, "dealer_coordinates": [50.0, 11.0767], "coordinate_accuracy_km": 10})[1]["distance"])
         with self.assertRaises(ValueError):
             validate_vehicle({**CAR, "url": "https://finder.porsche.com.example.org/de/de-DE/details/x"}, 2026)
@@ -92,9 +92,8 @@ class FinderTests(unittest.TestCase):
             build([SEED], output, "test", NOW)
             page = (output / "index.html").read_text()
             self.assertIn("Bestätigte Profiltreffer · 0", page)
-            self.assertNotIn("Porsche Zentrum Aschaffenburg", page)
-            self.assertNotIn("85.890 €", page)
-            self.assertEqual(len(ET.parse(output / "feed.xml").findall("./channel/item")), 0)
+            self.assertIn("Porsche Zentrum Aschaffenburg", page)
+            self.assertEqual(len(ET.parse(output / "feed.xml").findall("./channel/item")), 1)
             self.assertEqual((output / "build.txt").read_text().strip(), "test")
 
     def test_drive_time_is_sourced_and_rendered(self):
@@ -120,16 +119,19 @@ class FinderTests(unittest.TestCase):
             self.assertIn("Prüfbedürftige Inserate · 1", page)
 
     def test_only_selected_dealers_are_inside_radius_and_listed(self):
-        self.assertEqual(set(DEALERS), {"amberg", "bamberg", "bayreuth", "nuernberg", "regensburg", "ingolstadt", "wuerzburg"})
-        self.assertTrue(all(dealer_distance(value["coordinates"]) <= 100 for value in DEALERS.values()))
+        self.assertTrue({"amberg", "bamberg", "bayreuth", "nuernberg", "regensburg", "ingolstadt", "wuerzburg", "aschaffenburg", "heilbronn", "schwaebisch-gmuend", "augsburg", "erfurt", "olympiapark"} <= set(DEALERS))
+        self.assertTrue(all(dealer_distance(value["coordinates"]) <= 200 for value in DEALERS.values()))
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory)
             build([SEED], output, "test", NOW)
             page = (output / "index.html").read_text()
             for value in DEALERS.values():
                 self.assertIn(value["name"], page)
-                self.assertIn(f'ca. {value["drive_minutes"]} Min.' if value["drive_minutes"] < 60
-                              else f'ca. {value["drive_minutes"] // 60} Std. {value["drive_minutes"] % 60:02d} Min.', page)
+                if value["drive_minutes"] is not None:
+                    self.assertIn(f'ca. {value["drive_minutes"]} Min.' if value["drive_minutes"] < 60
+                                  else f'ca. {value["drive_minutes"] // 60} Std. {value["drive_minutes"] % 60:02d} Min.', page)
+                else:
+                    self.assertIn("Nicht verlässlich ermittelt", page)
 
     def test_duplicate_or_invalid_snapshot_is_rejected(self):
         with tempfile.TemporaryDirectory() as directory:
