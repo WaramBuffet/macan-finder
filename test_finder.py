@@ -126,7 +126,7 @@ class FinderTests(unittest.TestCase):
             build([SEED], output, "test", NOW)
             page = (output / "index.html").read_text()
             for value in DEALERS.values():
-                self.assertIn(value["name"], page)
+                self.assertIn(value["name"].replace("&", "&amp;"), page)
                 if value["drive_minutes"] is not None:
                     self.assertIn(f'ca. {value["drive_minutes"]} Min.' if value["drive_minutes"] < 60
                                   else f'ca. {value["drive_minutes"] // 60} Std. {value["drive_minutes"] % 60:02d} Min.', page)
