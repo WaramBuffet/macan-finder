@@ -46,11 +46,11 @@ AVAILABILITY = {
 CHECKS = {
     "registration": "Erstzulassung ab 2022", "color_group": "Außenfarbe weder Rot noch Weiß",
     "distance": "Im Umkreis von 100 km", "accident_free": "Unfallfrei",
-    "acc": "ACC laut Inserat vorhanden",
+    "acc": "ACC laut Inserat vorhanden", "km": "Höchstens 50.000 km",
 }
 WEIGHTS = {
     "Preis / Marktvergleich": 30, "Zustand / Historie": 25,
-    "Laufleistung / Erstzulassung": 20, "18-Wege-Sportsitze": 10,
+    "Laufleistung / Erstzulassung": 30,
     "Sport Chrono": 5, "Farbe / Gesamteindruck": 10,
 }
 
@@ -183,7 +183,7 @@ def dealer_overview():
 
 def assess(car):
     checks = {field: car.get(field) for field in ("accident_free", "acc")}
-    for key, limit in ():
+    for key, limit in (("km", 50000),):
         value = car.get(key)
         checks[key] = None if value is None else value <= limit
     registration = car.get("registration")
@@ -212,8 +212,8 @@ def assess(car):
 def tier(car):
     if car.get("price") is None or car.get("km") is None:
         return "Offen"
-    for name, price, km in (("A", 80000, 50000), ("B", 90000, 60000), ("C", 95000, 65000)):
-        if car["price"] <= price and car["km"] <= km:
+    for name, price in (("A", 80000), ("B", 90000), ("C", 95000)):
+        if car["price"] <= price:
             return name
     return "Außerhalb"
 
@@ -229,19 +229,17 @@ def score(car, peers, as_of):
         and peer["registration"][:4] == car["registration"][:4]
         and peer.get("price") is not None and peer.get("km") is not None
         and abs(peer["km"] - car["km"]) <= 10000
-        and car.get("seats18") is not None and car.get("chrono") is not None
-        and all(peer.get(field) == car[field] for field in ("seats18", "chrono"))
+        and car.get("chrono") is not None and peer.get("chrono") == car["chrono"]
     ]
     market = None
     if len(candidates) >= 5:
         market = round(max(0, min(30, 15 + 100 * (1 - car["price"] / median(candidates)))))
-    mileage = max(0, round(12 * (1 - car["km"] / 65000)))
+    mileage = max(0, round(22 * (1 - car["km"] / 50000)))
     age = as_of.astimezone(BERLIN).year - int(car["registration"][:4])
     points = {
         "Preis / Marktvergleich": market,
         "Zustand / Historie": car.get("condition_points"),
         "Laufleistung / Erstzulassung": mileage + max(0, 8 - 2 * age),
-        "18-Wege-Sportsitze": None if car.get("seats18") is None else 10 * car["seats18"],
         "Sport Chrono": None if car.get("chrono") is None else 5 * car["chrono"],
         "Farbe / Gesamteindruck": car.get("impression_points"),
     }
@@ -410,8 +408,8 @@ def build(paths, output, build_id, now):
 {dealer_overview()}
 {''.join(groups)}
 <section><h2>Suchprofil und Bewertung</h2>
-<p>Erstzulassung ab 2022, unfallfrei, keine roten oder weißen Fahrzeuge, ACC laut Inserat. Erwünscht sind 18-Wege-Sportsitze und Sport Chrono.</p>
-<p>A bis 80.000 € und 50.000 km · B bis 90.000 € und 60.000 km · C bis 95.000 € und 65.000 km.</p>
+<p>Erstzulassung ab 2022, höchstens 50.000 km, unfallfrei, keine roten oder weißen Fahrzeuge, ACC laut Inserat. Sport Chrono ist erwünscht. 18-Wege-Sitze werden nicht bewertet.</p>
+<p>Preisbereiche: A bis 80.000 € · B bis 90.000 € · C bis 95.000 €. Höhere Preise bleiben möglich.</p>
 <p>100 Punkte · {scoring}. Bei fehlenden Nachweisen bleibt der jeweilige Teilwert und gegebenenfalls der Gesamtscore offen.</p>
 <p>Ein als nicht mehr auffindbar dokumentiertes Inserat bleibt in der Historie. Preisangaben sind Angebotspreise zum Sichtungszeitpunkt.</p></section>
 <footer><a href="{REPO}">Projekt auf GitHub</a></footer>

@@ -26,10 +26,11 @@ class FinderTests(unittest.TestCase):
         self.assertEqual(assess({**self.car, "registration": "2021-12"})[0], "Ausgeschlossen")
         self.assertEqual(assess({**self.car, "registration": None})[0], "Prüfbedürftig")
         self.assertEqual(assess({**self.car, "acc": None, "acc_working": None})[0], "Prüfbedürftig")
-        boundary = {**self.car, "price": 95000, "km": 65000}
+        boundary = {**self.car, "price": 95000, "km": 50000}
         self.assertEqual(assess(boundary)[0], "Bestätigter Profiltreffer")
         self.assertEqual(tier(boundary), "C")
-        self.assertEqual(assess({**boundary, "km": 65001})[0], "Bestätigter Profiltreffer")
+        self.assertEqual(assess({**boundary, "km": 50001})[0], "Ausgeschlossen")
+        self.assertEqual(assess({**boundary, "km": None})[0], "Prüfbedürftig")
         self.assertEqual(tier({**self.car, "price": 80000, "km": 50000}), "A")
         self.assertEqual(tier(self.car), "B")
 
@@ -51,7 +52,8 @@ class FinderTests(unittest.TestCase):
         self.assertIsNone(score(car, peers[:4], NOW)[0])
         result, breakdown = score(car, peers, NOW)
         self.assertEqual(breakdown["Preis / Marktvergleich"], 15)
-        self.assertEqual(breakdown["18-Wege-Sportsitze"], 0)
+        self.assertNotIn("18-Wege-Sportsitze", breakdown)
+        self.assertEqual(score({**car, "seats18": None}, peers, NOW), (result, breakdown))
         self.assertEqual(result, sum(breakdown.values()))
 
     def snapshot(self, root, day, vehicles):

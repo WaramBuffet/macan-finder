@@ -21,10 +21,10 @@ Die Werte der ersten Stichprobe stammen aus dem [Finder-Inserat](https://finder.
 
 ## 100 Punkte
 
-- **Preis / Marktvergleich (30)**. Mindestens fünf andere innerhalb der letzten sieben Tage erfasste Inserate mit gleicher Variante, gleichem Erstzulassungsjahr, gleich bestätigten Ausstattungsmerkmalen für Sitze und Sport Chrono und bis zu 10.000 km Laufleistungsdifferenz. Der Median der Angebotspreise ergibt 15 Punkte. Je Prozent Preisabweichung kommt ein Punkt hinzu oder fällt weg, begrenzt auf 0 bis 30.
+- **Preis / Marktvergleich (30)**. Mindestens fünf andere innerhalb der letzten sieben Tage erfasste Inserate mit gleicher Variante, gleichem Erstzulassungsjahr, gleichem bestätigtem Sport Chrono und bis zu 10.000 km Laufleistungsdifferenz. Sitze spielen keine Rolle. Der Median der Angebotspreise ergibt 15 Punkte. Je Prozent Preisabweichung kommt ein Punkt hinzu oder fällt weg, begrenzt auf 0 bis 30.
 - **Zustand / Historie (25)**. Manuelle Bewertung mit Begründung anhand belegter Wartung, technischer Prüfung, Reifen, Bremsen und Garantie.
-- **Laufleistung / Erstzulassung (20)**. Bis zu 12 Punkte linear zwischen 0 und 65.000 km. Bis zu 8 Punkte für das Erstzulassungsjahr, abzüglich 2 je Kalenderjahr.
-- **18-Wege-Sportsitze (10) und Sport Chrono (5)**. Volle Punkte für bestätigte Ausstattung, null Punkte bei belegtem Fehlen, sonst offen.
+- **Laufleistung / Erstzulassung (30)**. Höchstens 50.000 km sind ein Muss-Kriterium; fehlende Angaben bleiben ungeklärt. Bis zu 22 Punkte linear zwischen 0 und 50.000 km und bis zu 8 Punkte für das Erstzulassungsjahr, abzüglich 2 je Kalenderjahr.
+- **Sport Chrono (5)**. Volle Punkte für bestätigte Ausstattung, null Punkte bei belegtem Fehlen, sonst offen. 18-Wege-Sitze werden nicht bewertet.
 - **Farbe / Gesamteindruck (10)**. Manuelle Bewertung mit Begründung. Die obigen Rechenregeln sind Arbeitsannahmen und anhand echter Vergleichsfälle zu kalibrieren.
 
 Ein Gesamtscore wird erst bei erfüllten Muss-Kriterien und vollständigen Teilwerten berechnet. Der RSS-Feed setzt erfüllte Muss-Kriterien voraus. Er erzeugt auch bei erneutem Seitenbau keine doppelten Ereignisse.
