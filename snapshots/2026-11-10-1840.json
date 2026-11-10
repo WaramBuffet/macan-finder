@@ -1,0 +1,137 @@
+{
+  "researched_at": "2026-11-10T18:40:00+01:00",
+  "verified_at": "2026-11-10T18:45:00+01:00",
+  "scope": "Manuelle Teilstichprobe am 10.11.2026: Porsche Finder, Macan S/GTS, 200 km um Nürnberg, EZ ab 2022, maximal 50.000 km und ACC-Filter. Porsche zeigte 16 Inserate auf zwei Seiten; die hier erfassten Inserate wurden einzeln geöffnet. Nicht alle Porsche-Zentren und ACC-Schreibweisen sind vollständig geprüft; keine Vollerhebung.",
+  "vehicles": [
+    {
+      "url": "https://finder.porsche.com/de/de-DE/details/porsche-macan-s-gebraucht-4GW7L5",
+      "dealer": "Porsche Zentrum Aschaffenburg",
+      "dealer_url": "https://aschaffenburg.porsche.de/de/contact",
+      "stock": "5321",
+      "model": "S",
+      "registration": "2024-09",
+      "price": 85890,
+      "km": 36700,
+      "color": "Dolomitsilbermetallic",
+      "color_group": "allowed",
+      "dealer_coordinates": [
+        49.9651,
+        9.1728
+      ],
+      "coordinate_accuracy_km": 1,
+      "accident_free": true,
+      "acc": true,
+      "warranty_months": 12,
+      "availability": "listed",
+      "drive_time": {
+        "minutes": 109,
+        "source": "https://www.google.com/maps/dir/?api=1&origin=Brand%2C+90542+Eckental%2C+Deutschland&destination=Porsche%20Zentrum%20Aschaffenburg&travelmode=driving",
+        "checked_at": "2026-11-10T18:45:00+01:00"
+      }
+    },
+    {
+      "url": "https://finder.porsche.com/de/de-DE/details/porsche-macan-gts-gebraucht-V43902",
+      "dealer": "Porsche Zentrum Böblingen",
+      "dealer_url": "https://boeblingen.porsche.de/de/contact",
+      "stock": "BB-2592",
+      "model": "GTS",
+      "registration": "2022-12",
+      "price": 92880,
+      "km": 31500,
+      "color": "Enzianblaumetallic",
+      "color_group": "allowed",
+      "dealer_coordinates": [
+        48.690139,
+        9.005312
+      ],
+      "coordinate_accuracy_km": 1,
+      "accident_free": true,
+      "acc": true,
+      "warranty_months": 12,
+      "availability": "listed",
+      "drive_time": {
+        "minutes": 149,
+        "source": "https://www.google.com/maps/dir/?api=1&origin=Brand%2C+90542+Eckental%2C+Deutschland&destination=Porsche%20Zentrum%20B%C3%B6blingen&travelmode=driving",
+        "checked_at": "2026-11-10T18:45:00+01:00"
+      }
+    },
+    {
+      "url": "https://finder.porsche.com/de/de-DE/details/porsche-macan-gts-gebraucht-Z5XEQ2",
+      "dealer": "Porsche Zentrum Stuttgart",
+      "dealer_url": "https://stuttgart.porsche.de/de/contact",
+      "stock": "G6475-IN",
+      "model": "GTS",
+      "registration": "2024-03",
+      "price": 83900,
+      "km": 42600,
+      "color": "Tiefschwarzmetallic",
+      "color_group": "allowed",
+      "dealer_coordinates": [
+        48.810827,
+        9.18128
+      ],
+      "coordinate_accuracy_km": 1,
+      "accident_free": true,
+      "acc": true,
+      "warranty_months": 12,
+      "availability": "listed",
+      "drive_time": {
+        "minutes": 138,
+        "source": "https://www.google.com/maps/dir/?api=1&origin=Brand%2C+90542+Eckental%2C+Deutschland&destination=Porsche%20Zentrum%20Stuttgart&travelmode=driving",
+        "checked_at": "2026-11-10T18:45:00+01:00"
+      }
+    },
+    {
+      "url": "https://finder.porsche.com/de/de-DE/details/porsche-macan-gts-gebraucht-ZOOD3D",
+      "dealer": "Porsche Zentrum Heilbronn",
+      "dealer_url": "https://heilbronn.porsche.de/de/contact",
+      "stock": "B42087",
+      "model": "GTS",
+      "registration": "2023-11",
+      "price": 89900,
+      "km": 22480,
+      "color": "Vulkangraumetallic",
+      "color_group": "allowed",
+      "dealer_coordinates": [
+        49.1213,
+        9.2231
+      ],
+      "coordinate_accuracy_km": 1,
+      "accident_free": true,
+      "acc": true,
+      "warranty_months": 12,
+      "availability": "listed",
+      "drive_time": {
+        "minutes": 120,
+        "source": "https://www.google.com/maps/dir/?api=1&origin=Brand%2C+90542+Eckental%2C+Deutschland&destination=Porsche%20Zentrum%20Heilbronn&travelmode=driving",
+        "checked_at": "2026-11-10T18:45:00+01:00"
+      }
+    },
+    {
+      "url": "https://finder.porsche.com/de/de-DE/details/porsche-macan-gts-gebraucht-6O6RPW",
+      "dealer": "Porsche Zentrum Schwäbisch Gmünd",
+      "dealer_url": "https://schwaebisch-gmuend.porsche.de/de/contact",
+      "stock": "SG-LZ-33",
+      "model": "GTS",
+      "registration": "2023-10",
+      "price": 92880,
+      "km": 18699,
+      "color": "Schwarz",
+      "color_group": "allowed",
+      "dealer_coordinates": [
+        48.7915,
+        9.7721
+      ],
+      "coordinate_accuracy_km": 1,
+      "accident_free": true,
+      "acc": true,
+      "warranty_months": 12,
+      "availability": "reserved",
+      "drive_time": {
+        "minutes": 120,
+        "source": "https://www.google.com/maps/dir/?api=1&origin=Brand%2C+90542+Eckental%2C+Deutschland&destination=Porsche%20Zentrum%20Schw%C3%A4bisch%20Gm%C3%BCnd&travelmode=driving",
+        "checked_at": "2026-11-10T18:45:00+01:00"
+      }
+    }
+  ]
+}
