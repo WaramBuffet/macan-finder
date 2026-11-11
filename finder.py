@@ -15,7 +15,7 @@ from zoneinfo import ZoneInfo
 ROOT = Path(__file__).resolve().parent
 SITE = "https://warambuffet.github.io/macan-finder/"
 REPO = "https://github.com/WaramBuffet/macan-finder"
-SEARCH = "https://finder.porsche.com/de/de-DE/search/macan?condition=used&model=macan&category=macan-s&category=macan-gts&position=N%C3%BCrnberg%2C49.45435%2C11.07346%2C200&equipment=acc-incl-pas"
+SEARCH = "https://finder.porsche.com/de/de-DE/search/macan?condition=used&model=macan&category=macan-s&category=macan-gts&maximum-price=85000&maximum-mileage=65000&minimum-registration-date=2022&position=N%C3%BCrnberg%2C49.45435%2C11.07346%2C200&equipment=acc-incl-pas"
 RADIUS_KM = 200
 NUREMBERG = (49.45435, 11.07346)
 DEALERS = {
@@ -402,6 +402,9 @@ def build(paths, output, build_id, now):
     research = display_time(last["researched_at"]) if last else "Kein Datenstand"
     verified = display_time(last["verified_at"]) if last else "Kein Datenstand"
     scope = escape(last["scope"]) if last else "Keine Stichprobe vorhanden"
+    research_logs = sorted((ROOT / "research").glob("*.md"))
+    research_link = (f'<p><a href="{REPO}/blob/main/research/{escape(research_logs[-1].name, quote=True)}">'
+                     'Aktuelles Rechercheprotokoll ↗</a></p>') if research_logs else ""
     page = f"""<!doctype html>
 <html lang="de"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Macan Finder · Nürnberg</title>
@@ -412,12 +415,12 @@ def build(paths, output, build_id, now):
 <p>Porsche Macan S und GTS · 200 km Luftlinie um Nürnberg</p></header>
 <section class="notice" aria-label="Datenstand">
 <strong>Manuell geprüfter Datenstand</strong>
-<p>Der tägliche Seitenlauf verarbeitet die hinterlegten Stichproben. Ein automatischer Porsche-Abruf ist nicht eingerichtet. Die erfassten Inserate sind eine Stichprobe.</p>
+<p>Der Seitenlauf verarbeitet die hinterlegten, manuell geprüften Erhebungen. Ein automatischer Porsche-Abruf ist nicht eingerichtet. Ob eine Erhebung vollständig oder eine Teilstichprobe ist, steht jeweils ausdrücklich im Rechercheumfang.</p>
 <dl><div><dt>Recherche</dt><dd>{research}</dd></div><div><dt>Letzte erfolgreiche Prüfung</dt><dd>{verified}</dd></div>
 <div><dt>Seite gebaut</dt><dd>{display_time(now.isoformat())}</dd></div>
 <div><dt>Veröffentlichung</dt><dd><a href="{REPO}/deployments">GitHub-Protokoll</a></dd></div></dl>
 <p>{scope}</p>
-<p><a href="{REPO}/blob/main/research/2026-11-10-1832.md">Rechercheprotokoll: Hinweise mit nicht bestätigter Aktualität ↗</a></p>
+{research_link}
 <p><a href="{escape(SEARCH)}">Porsche Finder öffnen ↗</a> · <a href="feed.xml">RSS für relevante Änderungen</a></p></section>
 {dealer_overview()}
 {''.join(groups)}
