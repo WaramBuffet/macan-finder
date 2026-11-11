@@ -32,3 +32,16 @@ Der RSS-Feed setzt erfüllte Muss-Kriterien voraus. Er erzeugt auch bei erneutem
 ## Veröffentlichung und Rechte
 
 Unter **Settings → Pages → Source** GitHub Actions auswählen. Der Build liest das Repository. Der Deployment-Job nutzt ausschließlich kurzlebige Berechtigungen für Pages und die Identitätsprüfung. Es gibt keine persönlichen Tokens, Passwörter, Benachrichtigungsadressen oder Repository-Schreibrechte im Workflow. Zum Pausieren den Workflow in GitHub Actions deaktivieren. Die zuletzt veröffentlichte Seite bleibt dabei verfügbar.
+
+## Cloud-Zugriffstest vom 11.11.2026
+
+Technischer Zugriffstest (keine neue Vollerhebung, keine Änderung der Fahrzeug-Prüfzeitstempel):
+
+- Öffentlicher Porsche Finder im Cloud-Chrome ohne lokale Browserfreigabe erreichbar. Filter für Macan S/GTS, gebraucht, EZ ab 2022, maximal 85.000 EUR / 65.000 km und Nürnberg +200 km sichtbar angewendet. Zweite Ergebnisseite über ihren öffentlichen Link erreichbar; darunter Erfurter Angebote.
+- Erfurter Detailseite (53.430 km / 77.000 EUR): Fahrzeugdaten, Sonderausstattung und aufgeklappte Serienausstattung lesbar; Galerie mit 26 Bildern erreichbar, geladene Fahrzeugbilder technisch bestätigt.
+- Offizielle Chemnitzer Detailseite 3K4D60 / Bestand 52-JG erreichbar; ACC und Rückfahrkamera inkl. Surround View sowie Entfall Modellbezeichnung im Inserat lesbar.
+- Google Maps: Route Eckental-Brand nach Porsche Zentrum Chemnitz ohne Anmeldung abrufbar, schnellste angezeigte Route im Test 2 h 8 min über A9/A72. Reiner Zugriffstest; bestehende datierte Fahrzeit-Richtwerte werden nicht ersetzt.
+- GitHub im Cloud-Browser öffentlich lesbar, jedoch nicht angemeldet. Veröffentlichung erfolgt über die bestehende GitHub-App-Verbindung; dieser Dokumentationscommit dient als Schreib- und Deploymenttest.
+- Die separate ChatGPT-Rechercheaufgabe ist täglich um 10, 13 und 17 Uhr Europe/Berlin aktiviert. GitHub Actions selbst führt keine Recherche durch. Die Aufgabenverwaltung meldet eine geerbte Ausführungsumgebung ohne ausgewiesene Umgebungsdetails und bietet im verfügbaren Update-Werkzeug keine feste Cloud-Zuordnung. Ein unbeaufsichtigter vollständiger Zeitplanlauf ist damit noch nicht nachgewiesen.
+
+Betriebsweg: Cloud-Browser für öffentliche Porsche-Originalseiten, GitHub-Verbindung für Daten/Protokolle, Actions für Tests und Pages, anschließend Prüfung der öffentlichen Build-ID. Keine Abhängigkeit von einer lokalen Browser-Erweiterung vorsehen. Bei fehlendem Cloud-Browser oder notwendiger Nutzerfreigabe den Lauf als blockiert/teilweise melden; keine Umgehung von Zugangssperren und keine vorgetäuschten frischen Daten.
