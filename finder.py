@@ -133,6 +133,13 @@ def validate_vehicle(car, year):
             raise ValueError(f"{field} muss true, false oder null sein")
     if car.get("acc_working") is True and car.get("acc") is not True:
         raise ValueError("Bestätigte ACC-Funktion setzt bestätigtes ACC voraus")
+    photo = car.get("photo_url")
+    if photo is not None:
+        parsed_photo = urlsplit(photo)
+        if (parsed_photo.scheme != "https" or parsed_photo.hostname not in
+                ("images.finder.porsche.com", "s.images.finder.porsche.com")
+                or parsed_photo.username is not None or parsed_photo.password is not None):
+            raise ValueError("Fahrzeugfoto muss von der offiziellen Porsche-Bildquelle stammen")
     for field, low, high in (("production_year", 2014, year), ("price", 1, 9999999),
                              ("km", 0, 999999), ("owners", 0, 99), ("warranty_months", 0, 120),
                              ("condition_points", 0, 25), ("impression_points", 0, 10)):
@@ -320,7 +327,7 @@ def rss(output, events):
     ET.ElementTree(root).write(output / "feed.xml", encoding="utf-8", xml_declaration=True)
 
 
-def card(car, observations, result, now, previous_sighting=False):
+def card(car, observations, result, now, previous_sighting=False, prominent=False):
     state, checks = assess(car)
     if previous_sighting:
         state = "Frühere Sichtung – aktuell ungeprüft"
@@ -347,6 +354,11 @@ def card(car, observations, result, now, previous_sighting=False):
     label = "Bewertung offen" if total is None else f"{total} von 6 Wünschen erfüllt · {sum(v is None for v in points.values())} offen"
     route = route_url(car["dealer"])
     dealer_id = (urlsplit(car["dealer_url"]).hostname or "").split(".")[0]
+    photo = car.get("photo_url")
+    photo_html = (f'<a class="vehicle-photo" href="{escape(car["url"], quote=True)}" aria-label="Originalinserat: Porsche Macan {escape(car["model"])} öffnen">'
+                  f'<img src="{escape(photo, quote=True)}" alt="Porsche Macan {escape(car["model"])} in {escape(car.get("color") or "unbekannter Farbe")}, Foto aus dem Inserat" loading="lazy"></a>') if prominent and photo else ""
+    confirmation = ('<div class="confirmed-banner"><span class="confirmed-check" aria-hidden="true">✓</span>'
+                    '<span><strong>Alle Muss-Kriterien erfüllt</strong><small>Einzeln am Porsche-Originalinserat geprüft</small></span></div>') if prominent else ""
     minutes = DEALER_DRIVE_MINUTES.get(dealer_id)
     fixed_drive = not car.get("drive_time") and minutes is not None
     drive = car.get("drive_time") or ({"minutes": minutes, "source": route, "checked_at": DEALER_DRIVE_CHECKED_AT} if minutes else None)
@@ -357,8 +369,12 @@ def card(car, observations, result, now, previous_sighting=False):
                        f' · {"Google Maps, Abfrage " + DEALERS[dealer_id].get("drive_checked_at", "09.11.2026") if fixed_drive else "Stand " + display_time(drive["checked_at"])}')
     else:
         drive_label = '<a href="{}">Fahrzeit in Routenplanung ansehen ↗</a>'.format(escape(route, quote=True))
+    classes = "vehicle-card confirmed-card" if prominent else "vehicle-card"
     return f"""
-    <article id="{escape(car['key'])}">
+    <article class="{classes}" id="{escape(car['key'])}">
+      {photo_html}
+      <div class="vehicle-content">
+      {confirmation}
       <p class="eyebrow">{escape(state)} · Preisbereich {tier(car)} · Kilometerbereich {mileage_tier(car)} · {label}</p>
       <h3>Porsche Macan {car['model']}</h3>
       <p><a href="{escape(car['dealer_url'])}">{escape(car['dealer'])}</a> · Fahrzeit ab Eckental-Brand: {drive_label} · <a href="{escape(route, quote=True)}">Route ansehen ↗</a> · Bestand {escape(car['stock'])}</p>
@@ -369,6 +385,7 @@ def card(car, observations, result, now, previous_sighting=False):
       <details><summary>Muss-Kriterien und Bewertung</summary><ul>{criteria}</ul>
       {f'<ul>{points_html}</ul>' if points_html else '<p>Bewertung nach Bestätigung aller Muss-Kriterien.</p>'}</details>
       <details><summary>Preis- und Statusverlauf</summary><ol>{prices}</ol></details>
+      </div>
     </article>"""
 
 
@@ -395,9 +412,11 @@ def build(paths, output, build_id, now):
         entries.sort(key=lambda row: (-(row[1][0] if row[1][0] is not None else -1),
                                       row[0].get("price") or math.inf))
         cards = "".join(card(car, history[car["key"]], result, now,
-                             (car["researched_at"] != latest_research or now - moment(car["researched_at"]) > timedelta(hours=48)) and car["availability"] == "listed")
+                             (car["researched_at"] != latest_research or now - moment(car["researched_at"]) > timedelta(hours=48)) and car["availability"] == "listed",
+                             prominent=name == "Bestätigte Profiltreffer")
                         for car, result in entries)
-        groups.append(f"<section><h2>{name} · {len(entries)}</h2>{cards or '<p>Keine Einträge im erfassten Bestand.</p>'}</section>")
+        section_class = ' class="confirmed-results"' if name == "Bestätigte Profiltreffer" else ""
+        groups.append(f"<section{section_class}><h2>{name} · {len(entries)}</h2>{cards or '<p>Keine Einträge im erfassten Bestand.</p>'}</section>")
     last = snapshots[-1] if snapshots else None
     research = display_time(last["researched_at"]) if last else "Kein Datenstand"
     verified = display_time(last["verified_at"]) if last else "Kein Datenstand"

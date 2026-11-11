@@ -11,6 +11,17 @@ a:focus-visible, summary:focus-visible { outline: 2px solid #164b45; outline-off
 .notice, article { border: 1px solid #cecfc6; border-radius: .7rem; padding: 1.2rem; margin: 1.25rem 0; }
 .notice { background: #e8ede5; }
 article { background: #fff; }
+.confirmed-results { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.1rem; }
+.confirmed-results > h2 { grid-column: 1 / -1; margin-bottom: 0; }
+.vehicle-card { padding: 0; overflow: hidden; }
+.confirmed-card { border: 2px solid #176b50; box-shadow: 0 .35rem 1.2rem #164b451f; }
+.vehicle-photo { display: block; background: #e9ece8; aspect-ratio: 16 / 9; overflow: hidden; }
+.vehicle-photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.vehicle-content { padding: 1.15rem; }
+.confirmed-banner { display: flex; align-items: center; gap: .75rem; padding: .85rem 1rem; margin: -.1rem 0 1rem; border-radius: .6rem; color: #fff; background: #176b50; }
+.confirmed-check { display: grid; place-items: center; width: 2rem; height: 2rem; flex: 0 0 2rem; border-radius: 50%; color: #176b50; background: #fff; font-size: 1.25rem; font-weight: 800; }
+.confirmed-banner strong, .confirmed-banner small { display: block; }
+.confirmed-banner small { margin-top: .15rem; opacity: .9; }
 .eyebrow { color: #41635d; font-size: .8rem; text-transform: uppercase; font-weight: 700; letter-spacing: .075em; }
 dl { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(11rem, 100%), 1fr)); gap: .8rem; }
 dt, .muted { color: #505b55; font-size: .9rem; }
@@ -20,3 +31,4 @@ table { width: 100%; border-collapse: collapse; display: block; overflow-x: auto
 th, td { padding: .7rem .8rem; border-bottom: 1px solid #cecfc6; text-align: left; vertical-align: top; }
 th { color: #41635d; font-size: .82rem; text-transform: uppercase; letter-spacing: .035em; }
 footer { padding-top: 1rem; border-top: 1px solid #cecfc6; }
+@media (max-width: 42rem) { .confirmed-results { grid-template-columns: 1fr; } .confirmed-results > h2 { grid-column: 1; } }
