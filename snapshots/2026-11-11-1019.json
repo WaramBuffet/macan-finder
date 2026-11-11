@@ -15,7 +15,10 @@
       "km": 55230,
       "color": "Tiefschwarzmetallic",
       "color_group": "allowed",
-      "dealer_coordinates": [50.8054821, 12.857103],
+      "dealer_coordinates": [
+        50.8054821,
+        12.857103
+      ],
       "coordinate_accuracy_km": 1,
       "accident_free": true,
       "acc": true,
@@ -31,7 +34,11 @@
       "rear_camera": true,
       "surround_view": true,
       "privacy_glass": true,
-      "badge_removed": true
+      "badge_removed": true,
+      "badge_removed_evidence": "laut Sonderausstattung im Porsche-Inserat",
+      "badge_removed_evidence_text": "Sonderausstattung: „PORSCHE“-Schriftzug lackiert inkl. Entfall Modellbezeichnung",
+      "badge_removed_source": "https://chemnitz.porsche.de/de/inventory/porsche/porsche-macan-gts-gebraucht-3K4D60",
+      "badge_checked_at": "2026-11-11"
     },
     {
       "url": "https://stuttgart-filderstadt.porsche.de/de/inventory/porsche/porsche-macan-s-gebraucht-8O4G3M",
@@ -45,7 +52,10 @@
       "km": 53200,
       "color": "Tiefschwarzmetallic",
       "color_group": "allowed",
-      "dealer_coordinates": [48.6822562, 9.210313],
+      "dealer_coordinates": [
+        48.6822562,
+        9.210313
+      ],
       "coordinate_accuracy_km": 1,
       "accident_free": true,
       "acc": true,
@@ -56,7 +66,11 @@
       "rear_camera": true,
       "surround_view": false,
       "privacy_glass": true,
-      "badge_removed": true
+      "badge_removed": true,
+      "badge_removed_evidence": "laut Sonderausstattung im Porsche-Inserat",
+      "badge_removed_evidence_text": "Sonderausstattung: Entfall Modellbezeichnung",
+      "badge_removed_source": "https://stuttgart-filderstadt.porsche.de/de/inventory/porsche/porsche-macan-s-gebraucht-8O4G3M",
+      "badge_checked_at": "2026-11-11"
     },
     {
       "url": "https://finder.porsche.com/de/de-DE/details/porsche-macan-gts-gebraucht-Z5XEQ2",
@@ -69,7 +83,10 @@
       "km": 42600,
       "color": "Tiefschwarzmetallic",
       "color_group": "allowed",
-      "dealer_coordinates": [48.810827, 9.18128],
+      "dealer_coordinates": [
+        48.810827,
+        9.18128
+      ],
       "coordinate_accuracy_km": 1,
       "accident_free": true,
       "acc": true,
@@ -99,7 +116,10 @@
       "km": 47625,
       "color": "Kreide",
       "color_group": "allowed",
-      "dealer_coordinates": [50.1160256, 8.7273209],
+      "dealer_coordinates": [
+        50.1160256,
+        8.7273209
+      ],
       "coordinate_accuracy_km": 1,
       "accident_free": true,
       "acc": true,
@@ -116,7 +136,11 @@
       "surround_view": true,
       "privacy_glass": true,
       "badge_removed": true,
-      "availability_note": "Verfügbar ab 26.11.2026 laut Inserat"
+      "availability_note": "Verfügbar ab 26.11.2026 laut Inserat",
+      "badge_removed_evidence": "laut Sonderausstattung im Porsche-Inserat",
+      "badge_removed_evidence_text": "Sonderausstattung: Entfall Modellbezeichnung",
+      "badge_removed_source": "https://finder.porsche.com/de/de-DE/details/porsche-macan-s-gebraucht-XGM4NX",
+      "badge_checked_at": "2026-11-11"
     },
     {
       "url": "https://finder.porsche.com/de/de-DE/details/porsche-macan-gts-gebraucht-6ORD8D",
@@ -130,7 +154,10 @@
       "km": 52560,
       "color": "Enzianblaumetallic",
       "color_group": "allowed",
-      "dealer_coordinates": [50.973949, 11.061862],
+      "dealer_coordinates": [
+        50.973949,
+        11.061862
+      ],
       "coordinate_accuracy_km": 1,
       "accident_free": true,
       "acc": true,
@@ -146,7 +173,11 @@
       "rear_camera": true,
       "surround_view": true,
       "privacy_glass": true,
-      "badge_removed": null
+      "badge_removed": null,
+      "badge_removed_evidence": "offen; Heckfoto nicht verlässlich geprüft",
+      "badge_removed_evidence_text": "Sonderausstattung nennt keinen Entfall der Modellbezeichnung",
+      "badge_removed_source": "https://finder.porsche.com/de/de-DE/details/porsche-macan-gts-gebraucht-6ORD8D",
+      "badge_checked_at": "2026-11-11"
     }
   ]
 }

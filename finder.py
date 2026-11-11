@@ -345,6 +345,12 @@ def card(car, observations, result, now, previous_sighting=False, prominent=Fals
          f"ca. {round(km)} km (±{car['coordinate_accuracy_km']} km)"),
         ("Garantie", number(car.get("warranty_months"), " Monate")),
     ]
+    if prominent:
+        badge_value = status(car.get("badge_removed"))
+        evidence = car.get("badge_removed_evidence")
+        if evidence:
+            badge_value += " · " + evidence
+        values.append(("Modellbezeichnung entfallen", badge_value))
     details = "".join(f"<div><dt>{escape(label)}</dt><dd>{escape(str(value))}</dd></div>"
                       for label, value in values)
     criteria = "".join(f"<li>{label} · {status(checks[field])}</li>" for field, label in CHECKS.items()
