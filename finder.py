@@ -19,6 +19,7 @@ SEARCH = "https://finder.porsche.com/de/de-DE/search/macan?condition=used&model=
 RADIUS_KM = 200
 NUREMBERG = (49.45435, 11.07346)
 DEALERS = {
+    "allgaeu": {"name": "Porsche Zentrum Allgäu", "url": "https://www.porsche-kempten.de/", "coordinates": (47.7374707, 10.3378211), "drive_minutes": 180, "drive_checked_at": "11.11.2026, 13:52 MEZ", "drive_source": "https://www.google.com/maps/dir/?api=1&origin=Brand%2C+90542+Eckental%2C+Deutschland&destination=Porsche+Zentrum+Allg%C3%A4u%2C+Georg-Krug-Stra%C3%9Fe+10%2C+Kempten&travelmode=driving"},
     "chemnitz": {"name": "Porsche Zentrum Chemnitz", "url": "https://chemnitz.porsche.de/de/contact", "coordinates": (50.8054821, 12.857103), "drive_minutes": 125, "drive_checked_at": "10.11.2026, 19:17 MEZ"},
     "amberg": {"name": "Porsche Zentrum Amberg", "url": "https://amberg.porsche.de/de/contact",
                "coordinates": (49.4355, 11.8888), "drive_minutes": 56},
@@ -206,7 +207,7 @@ def dealer_overview():
         rows.append(
             f'<tr><td><a href="{escape(dealer["url"], quote=True)}">{escape(dealer["name"])}</a></td>'
             f'<td>ca. {km:.1f} km</td><td>{duration}</td>'
-            f'<td><a href="{escape(route_url(dealer["name"]), quote=True)}">Google Maps</a>{source_note}</td></tr>'
+            f'<td><a href="{escape(dealer.get("drive_source") or route_url(dealer["name"]), quote=True)}">Google Maps</a>{source_note}</td></tr>'
         )
     return ("<section><h2>Berücksichtigte Porsche Zentren</h2>"
             "<p>Die Luftlinie ist aus den dokumentierten Standortkoordinaten berechnet. Die Fahrzeiten sind dauerhaft "
