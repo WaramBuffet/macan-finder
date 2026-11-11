@@ -333,8 +333,12 @@ def card(car, observations, result, now, previous_sighting=False, prominent=Fals
         state = "Frühere Sichtung – aktuell ungeprüft"
     total, points = result
     km = distance(car)
+    availability = AVAILABILITY[car["availability"]]
+    if car.get("availability_note"):
+        availability += " · " + car["availability_note"]
     values = [
         ("Preis", number(car.get("price"), " €")), ("Laufleistung", number(car.get("km"), " km")),
+        ("Angebotsstatus", availability),
         ("Erstzulassung", car.get("registration") or "Ungeklärt"),
         ("Außenfarbe", car.get("color") or "Ungeklärt"),
         ("Luftlinie", "Ungeklärt" if km is None else
