@@ -174,10 +174,11 @@
       "surround_view": true,
       "privacy_glass": true,
       "badge_removed": null,
-      "badge_removed_evidence": "offen; Heckfoto nicht verlässlich geprüft",
-      "badge_removed_evidence_text": "Sonderausstattung nennt keinen Entfall der Modellbezeichnung",
+      "badge_removed_evidence": "offen; Heckfoto 3/7 zeigt Schriftzüge, Porsche warnt vor möglichem KI-Bildmaterial",
+      "badge_removed_evidence_text": "Heckfoto 3/7 zeigt „PORSCHE“ und „Macan GTS“; Porsche-Hinweis: Fahrzeugbilder können KI-generiert sein und vom tatsächlichen Fahrzeug abweichen",
       "badge_removed_source": "https://finder.porsche.com/de/de-DE/details/porsche-macan-gts-gebraucht-6ORD8D",
-      "badge_checked_at": "2026-11-11"
+      "badge_checked_at": "2026-11-11",
+      "badge_removed_photo_source": "https://s.images.finder.porsche.com/fb0868dd-0c59-5152-a068-bbd161790060?width=640&format=auto"
     }
   ]
 }
