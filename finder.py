@@ -442,6 +442,13 @@ def build(paths, output, build_id, now):
 <main>
 <header><p class="eyebrow">Gebrauchtwagen · Offizielle Porsche-Zentren</p><h1>Macan Finder</h1>
 <p>Porsche Macan S und GTS · 200 km Luftlinie um Nürnberg</p></header>
+{groups[0]}
+{dealer_overview()}
+{''.join(groups[1:])}
+<section><h2>Suchprofil und Bewertung</h2>
+<p>Muss: Macan III (Modellpflege ab 2021), Erstzulassung ab 2022, unfallfrei, Schwarz, Grau, Silber, Blau oder Kreide, ACC laut Inserat, Rückfahrkamera, höchstens zwei Vorbesitzer, 65.000 km und 85.000 €. Eine zusätzliche ACC-Funktionsprüfung ist nicht erforderlich.</p>
+<p>Wünsche: bis 50.000 km, bis 65.000 €, ein Vorbesitzer, Surround View, Privacyverglasung und entfallene Modellbezeichnung. Alle sechs Wünsche zählen gleich; unbekannte Angaben werden als offen ausgewiesen.</p>
+<p>Ein als nicht mehr auffindbar dokumentiertes Inserat bleibt in der Historie. Preisangaben sind Angebotspreise zum Sichtungszeitpunkt.</p></section>
 <section class="notice" aria-label="Datenstand">
 <strong>Manuell geprüfter Datenstand</strong>
 <p>Der Seitenlauf verarbeitet die hinterlegten, manuell geprüften Erhebungen. Ein automatischer Porsche-Abruf ist nicht eingerichtet. Ob eine Erhebung vollständig oder eine Teilstichprobe ist, steht jeweils ausdrücklich im Rechercheumfang.</p>
@@ -451,12 +458,6 @@ def build(paths, output, build_id, now):
 <p>{scope}</p>
 {research_link}
 <p><a href="{escape(SEARCH)}">Porsche Finder öffnen ↗</a> · <a href="feed.xml">RSS für relevante Änderungen</a></p></section>
-{dealer_overview()}
-{''.join(groups)}
-<section><h2>Suchprofil und Bewertung</h2>
-<p>Muss: Macan III (Modellpflege ab 2021), Erstzulassung ab 2022, unfallfrei, Schwarz, Grau, Silber, Blau oder Kreide, ACC laut Inserat, Rückfahrkamera, höchstens zwei Vorbesitzer, 65.000 km und 85.000 €. Eine zusätzliche ACC-Funktionsprüfung ist nicht erforderlich.</p>
-<p>Wünsche: bis 50.000 km, bis 65.000 €, ein Vorbesitzer, Surround View, Privacyverglasung und entfallene Modellbezeichnung. Alle sechs Wünsche zählen gleich; unbekannte Angaben werden als offen ausgewiesen.</p>
-<p>Ein als nicht mehr auffindbar dokumentiertes Inserat bleibt in der Historie. Preisangaben sind Angebotspreise zum Sichtungszeitpunkt.</p></section>
 <footer><a href="{REPO}">Projekt auf GitHub</a></footer>
 </main></html>
 """
