@@ -1,6 +1,6 @@
 # Macan Finder
 
-Porsche Macan S und GTS im Umkreis von 200 km Luftlinie um Nürnberg. Berücksichtigt werden die in `DEALERS` dokumentierten offiziellen Porsche Zentren; die Liste der neu recherchierten Standorte ist eine Teilrecherche, nicht notwendigerweise vollständig. Der Radius wird zusätzlich anhand der Standortkoordinaten geprüft. Die [Webseite](https://warambuffet.github.io/macan-finder/) zeigt geprüfte Angebote und Fahrzeit-Richtwerte ab Eckental-Brand.
+Porsche Macan S und GTS im Umkreis von 200 km Luftlinie um Nürnberg. Berücksichtigt werden die in `DEALERS` dokumentierten offiziellen Porsche Zentren; die Liste wurde am 13.11.2026 mit allen 34 Treffern der offiziellen Porsche-Händlersuche für Nürnberg +200 km abgeglichen und um das bereits gespeicherte Frankfurt West ergänzt. Der Radius wird zusätzlich anhand der Standortkoordinaten geprüft. Die [Webseite](https://warambuffet.github.io/macan-finder/) zeigt geprüfte Angebote und Fahrzeit-Richtwerte ab Eckental-Brand.
 
 ## Datenstand
 
@@ -45,3 +45,10 @@ Technischer Zugriffstest (keine neue Vollerhebung, keine Änderung der Fahrzeug-
 - Die separate ChatGPT-Rechercheaufgabe ist täglich um 10, 13 und 17 Uhr Europe/Berlin aktiviert. GitHub Actions selbst führt keine Recherche durch. Die Aufgabenverwaltung meldet eine geerbte Ausführungsumgebung ohne ausgewiesene Umgebungsdetails und bietet im verfügbaren Update-Werkzeug keine feste Cloud-Zuordnung. Ein unbeaufsichtigter vollständiger Zeitplanlauf ist damit noch nicht nachgewiesen.
 
 Betriebsweg: Cloud-Browser für öffentliche Porsche-Originalseiten, GitHub-Verbindung für Daten/Protokolle, Actions für Tests und Pages, anschließend Prüfung der öffentlichen Build-ID. Keine Abhängigkeit von einer lokalen Browser-Erweiterung vorsehen. Bei fehlendem Cloud-Browser oder notwendiger Nutzerfreigabe den Lauf als blockiert/teilweise melden; keine Umgehung von Zugangssperren und keine vorgetäuschten frischen Daten.
+
+
+## Vollerhebung vom 13.11.2026
+
+Im Cloud-Browser wurden 35 Zentren vollständig geprüft: 83 S/GTS-Angebote auf 35 Ergebnisseiten, sämtliche 8 potenziell passenden Kandidaten mit vollständiger Ausstattung sowie alle gespeicherten Altangebote (21 Einzelprüfungen einschließlich eines ausdrücklichen Verkaufsbelegs). Keine Zugriffsblockade oder lokale Nutzerfreigabe war erforderlich. Vier verfügbare Profiltreffer; Chemnitz ist reserviert, Stuttgart wieder reservierbar. Frankfurt 2018 ist erst ab 26.11.2026 verfügbar. Alle Quellen, Zeiten, Ausschlüsse und Änderungen stehen im [Rechercheprotokoll](research/2026-11-13-1018.md). Die bestehenden datierten Fahrzeit-Richtwerte bleiben unverändert.
+
+Dieser erfolgreich durchgeführte Recherchelauf belegt die Abrufbarkeit in seiner tatsächlich bereitgestellten Cloud-Umgebung. Er garantiert keine Verfügbarkeit derselben Umgebung bei künftigen Zeitplanläufen. GitHub Actions bleibt für Tests, Build und Pages zuständig; eine reine Wiederveröffentlichung ist keine neue Recherche.

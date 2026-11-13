@@ -15,7 +15,7 @@ from zoneinfo import ZoneInfo
 ROOT = Path(__file__).resolve().parent
 SITE = "https://warambuffet.github.io/macan-finder/"
 REPO = "https://github.com/WaramBuffet/macan-finder"
-SEARCH = "https://finder.porsche.com/de/de-DE/search/macan?condition=used&model=macan&category=macan-s&category=macan-gts&maximum-price=85000&maximum-mileage=65000&minimum-registration-date=2022&position=N%C3%BCrnberg%2C49.45435%2C11.07346%2C200&equipment=acc-incl-pas"
+SEARCH = "https://finder.porsche.com/de/de-DE/search/macan?condition=used&model=macan&category=macan-s&category=macan-gts&maximum-price=85000&maximum-mileage=65000&minimum-registration-date=2022&position=N%C3%BCrnberg%2C49.45435%2C11.07346%2C200"
 RADIUS_KM = 200
 NUREMBERG = (49.45435, 11.07346)
 DEALERS = {
@@ -391,7 +391,7 @@ def card(car, observations, result, now, previous_sighting=False, prominent=Fals
       <p><a href="{escape(car['dealer_url'])}">{escape(car['dealer'])}</a> · Fahrzeit ab Eckental-Brand: {drive_label} · <a href="{escape(route, quote=True)}">Route ansehen ↗</a> · Bestand {escape(car['stock'])}</p>
       <dl>{details}</dl>
       <p class="muted">Status bei letzter Sichtung: {AVAILABILITY[car['availability']]}{escape(' · ' + car.get('availability_note', '')) if car.get('availability_note') else ''}{freshness}<br>
-      Erstfund {display_time(observations[0]['researched_at'])} · Letzte Sichtung {display_time(car['researched_at'])}</p>
+      Erstfund {display_time(observations[0]['researched_at'])} · Letzte Sichtung {display_time(car.get('listing_checked_at') or car['researched_at'])}</p>
       <p><a href="{escape(car['url'])}">Originalinserat öffnen ↗</a></p>
       <details><summary>Muss-Kriterien und Bewertung</summary><ul>{criteria}</ul>
       {f'<ul>{points_html}</ul>' if points_html else '<p>Bewertung nach Bestätigung aller Muss-Kriterien.</p>'}</details>
