@@ -211,7 +211,7 @@ def dealer_overview():
         )
     return ("<section><h2>Berücksichtigte Porsche Zentren</h2>"
             "<p>Die Luftlinie ist aus den dokumentierten Standortkoordinaten berechnet. Die Fahrzeiten sind dauerhaft "
-            "hinterlegte Richtwerte aus datierten Google-Maps-Abfragen, keine Live- oder statistischen Durchschnittswerte. Fehlende Werte sind noch nicht verlässlich belegt; die Standortliste ist eine Teilrecherche.</p>"
+            "hinterlegte Richtwerte aus datierten Google-Maps-Abfragen, keine Live- oder statistischen Durchschnittswerte. Der dokumentierte Suchumfang und die Prüfzeitpunkte stehen unten im Datenstand.</p>"
             "<table><thead><tr><th>Zentrum</th><th>Luftlinie ab Nürnberg</th><th>Fahrzeit ab Eckental-Brand</th>"
             "<th>Quelle</th></tr></thead><tbody>" + "".join(rows) + "</tbody></table></section>")
 
